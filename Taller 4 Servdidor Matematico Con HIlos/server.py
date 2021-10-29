@@ -1,7 +1,6 @@
 import zmq 
 import json
-import math
-import queue
+
 import concurrent.futures
 
 context = zmq.Context()
@@ -14,9 +13,7 @@ print("Server socket connected to local host")
 confirmation_Message = "Data recieved in server"
 
 def parallelSum(number_Array):
-    print("ENTRERING PARALELISM")
-    que1 = queue.Queue()
-    que2 = queue.Queue()
+    print("ENTRERING PARALELISM FOR SUM")
     half = len(number_Array)//2
     length = len(number_Array)
     first_Half = []
@@ -29,8 +26,13 @@ def parallelSum(number_Array):
     'ADDING BOTH HALFS'
     print("SUCCESSFULLY DIVIDED ARRAYS")
     with concurrent.futures.ThreadPoolExecutor() as executor:
+        print("Creating first thread")
         first_Half_Result = executor.submit(addingHalf, first_Half)
+        print("Creation of first thread successfull")
+
+        print("Creating second thread")
         second_Half_Result = executor.submit(addingHalf, second_Half)
+        print("Creation of second thread successfull")
 
         first_Half_Return_Value = first_Half_Result.result()
         second_Half_Return_Value = second_Half_Result.result()
@@ -48,6 +50,50 @@ def addingHalf(half_Array):
     half_Result = 0
     for i in range(length):
         half_Result += int(half_Array[i])
+    return half_Result
+
+
+def parallelSub(number_Array):
+    print("ENTRERING PARALELISM FOR SUB")
+    half = len(number_Array)//2
+    length = len(number_Array)
+    first_Half = []
+    second_Half = []
+    result = 0
+    for i in range(half):
+        first_Half.append(number_Array[i])
+    for i in range(half, length):
+        second_Half.append(number_Array[i])
+    'ADDING BOTH HALFS'
+    print("SUCCESSFULLY DIVIDED ARRAYS")
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        print("Creating first thread")
+        first_Half_Result = executor.submit(subtractingHalf, first_Half)
+        print("Creation of first thread successfull")
+
+        print("Creating second thread")
+        second_Half_Result = executor.submit(subtractingHalf, second_Half)
+        print("Creation of second thread successfull")
+
+        first_Half_Return_Value = first_Half_Result.result()
+        second_Half_Return_Value = second_Half_Result.result()
+
+        print("Result of first half", first_Half_Return_Value)
+        print("Result of second half", second_Half_Return_Value)
+
+        result = (first_Half_Return_Value) + (second_Half_Return_Value)
+        print("Result of subtracting both halfs: ", result)
+    return result
+    
+    
+
+def subtractingHalf(half_Array):
+    length = len(half_Array)
+    half_Result = int(half_Array[0])
+    print("First number: ", half_Result)
+    for i in range(1, length):
+        half_Result -= int(half_Array[i])
+    print("Cumulative answer: ", half_Result)
     return half_Result
 
 
@@ -71,5 +117,9 @@ while True:
         if option == "s":
             try:
                 'Parallel'
+                sub_Total = parallelSub(number_Array)
+                result = str(sub_Total)
+                print("Sending result to middleserver: ", result)
+                server_Socket.send_string(result)
             except Exception as e:
                 print(e)
