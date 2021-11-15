@@ -16,13 +16,13 @@ def main():
     When a group does not exist the group id is replaced with (empty)
     When the group has spots available, those spots are filled with (nm) representing NO MEMBER
     """
-    matrix_Of_Groups = np.array([['empty','nm','nm'],
-                                 ['sub', 'm2', 'm3'],
-                                 ['mul', 'm1', 'm5'],
-                                 ['empty','nm','nm'],
-                                 ['empty','nm','nm'],
-                                 ['empty','nm','nm'],
-                                 ['empty','nm','nm']])
+    matrix_Of_Groups = np.array([['add','m4','nm', 'nm'],
+                                 ['sub', 'm2', 'm3', 'nm'],
+                                 ['mul', 'm1', 'm5', 'nm'],
+                                 ['empty','nm','nm', 'nm'],
+                                 ['empty','nm','nm', 'nm'],
+                                 ['empty','nm','nm', 'nm'],
+                                 ['empty','nm','nm', 'nm']])
     """
     This id will help identify the computer
     """
@@ -91,8 +91,122 @@ def printMatrix(matrix_Of_Groups):
                 if(matrix_Of_Groups[i][j+1] != 'nm'):
                     print("Members: ", matrix_Of_Groups[i][j+1])
 
-def enterGroup(matrix_Of_Groups, machine_ID, group_ID):
+def enterGroup(matrix_Of_Groups, machine_ID):
+    print("You have chosen to enter a group")
+    group_Exists = False
+    is_Member = False
+    option = True
+    while option:
+        printMenu()
+        group_ID = input("Which group would you like to join: ")
+        """
+        IF THE USER SELECTS 1 WE WILL INSERT THE MACHINE IN A GROUP FOR ADDING
+        HOWEVER WE MUST CHECK IF THAT GROUP ALREADY EXISTS AND IF THE MACHINE IS NOT A MEMBER ALREADY
+        AND DEPENDING ON THE OUTCOME WE WILL INFORM THE USER
+        THE GROUP DOEST EXIST
+        THE GROUP EXISTS AND YOU ARE ALREADY A MEMBER AND THEREFORE CANNOT REJOIN
+        THE GROUP EXISTS AND YOU WERE NOT PREVIUSLY A MEMBER AND THEREFORE YOU WILL JOIN
+        """
+        if(group_ID == '1'):
+            group_Exists = alreadyGroup(matrix_Of_Groups, group_ID)
+            if(group_Exists == False):
+                print("The group does not exist, therefore you cannot join")
+                print("Would you like to create the adding group")
+                print("Press 1 for yes")
+                print("Press 0 for no")
+                opt = input("Please enter your selection: ")
+                if(opt == '0'):
+                    print("You have elected not to create the group")
+                    print("Redirecting you to main menu")
+                    time.sleep(5)
+                    userControl(machine_Of_Groups, machine_ID)
+                if(opt == '1'):
+                    print("You have elected to create the group")
+                    print("Redirecting you the creating menu")
+                    print("\n")
+                    matrix_Of_Groups = createGroup(matrix_Of_Groups, machine_ID)
+                    option = False
+            if(group_Exists == True):
+                print("The group does exist")
+                print("However in order to join you cannot already be a member")
+                print("Verification in progress")
+                is_Member = alreadyInGroup(matrix_Of_Groups, machine_ID, group_ID)
+                if(is_Member == True):
+                    print("You are already a member of this group and therefore cannot join")
+                    print("Redirecting you to main menu")
+                    time.sleep(5)
+                    userControler(matrix_Of_Groups, machine_ID)
+                if(is_Member == False):
+                    print("You are not a member of this group and therefore may join")
+                    print("Joining group")
+                    matrix_Of_Groups = joinGroup(matrix_Of_Groups, machine_ID, group_ID)
+                    print("The new matrix of groups looks like this: ")
+                    printMatrix(matrix_Of_Groups)
+                    time.sleep(5)
+                    option = False
+        if(group_ID == '2'):
+            group_Exists = alreadyGroup(matrix_Of_Groups, group_ID)
+            if(group_Exists == False):
+                print("The group does not exist, therefore you cannot join")
+                print("Would you like to create the subtracting group")
+                print("Press 1 for yes")
+                print("Press 0 for no")
+                opt = input("Please enter your selection: ")
+                if(opt == '0'):
+                    print("You have elected not to create the group")
+                    print("Redirecting you to main menu")
+                    time.sleep(5)
+                    userControl(machine_Of_Groups, machine_ID)
+                if(opt == '1'):
+                    print("You have elected to create the group")
+                    print("Redirecting you the creating menu")
+                    print("\n")
+                    matrix_Of_Groups = createGroup(matrix_Of_Groups, machine_ID)
+                    option = False
+            if(group_Exists == True):
+                print("The group does exist")
+                print("However in order to join you cannot already be a member")
+                print("Verification in progress")
+                is_Member = alreadyInGroup(matrix_Of_Groups, machine_ID, group_ID)
+                if(is_Member == True):
+                    print("You are already a member of this group and therefore cannot join")
+                    print("Redirecting you to main menu")
+                    time.sleep(5)
+                    userControler(matrix_Of_Groups, machine_ID)
+                if(is_Member == False):
+                    print("You are not a member of this group and therefore may join")
+                    print("Joining group")
+                    matrix_Of_Groups = joinGroup(matrix_Of_Groups, machine_ID, group_ID)
+                    print("The new matrix of groups looks like this: ")
+                    printMatrix(matrix_Of_Groups)
+                    time.sleep(5)
+                    option = False
+        print("\n")
+        return matrix_Of_Groups
 
+"""
+THIS FUNCTION WILL ADD A MACHINE TO A GROUP
+"""
+def joinGroup(matrix_Of_Groups, machine_ID, group_ID):
+    if(group_ID == '1'):
+        print("\n")
+        print("You are joining the add group")
+        for i in range(len(matrix_Of_Groups)):
+            if(matrix_Of_Groups[i][0] == 'add'):
+                for j in range(len(matrix_Of_Groups) - 1):
+                    if(matrix_Of_Groups[i][j + 1] == "nm"):
+                        matrix_Of_Groups[i][j + 1] = machine_ID
+                        break
+    if(group_ID == '2'):
+        print("\n")
+        print("You are joining the subtracting group")
+        for i in range(len(matrix_Of_Groups)):
+            if(matrix_Of_Groups[i][0] == 'sub'):
+                for j in range(len(matrix_Of_Groups) - 1):
+                    if(matrix_Of_Groups[i][j + 1] == "nm"):
+                        matrix_Of_Groups[i][j + 1] = machine_ID
+                        break
+    return matrix_Of_Groups
 
 """
 THIS FUNCTION CORRESPONDS TO THE SECOND OPTION IN THE USER CONTROLER AND IT WILL ATEMPT
@@ -222,22 +336,22 @@ EDITORS NOTE: THIS FUNCTION IS STILL A WORK IN PROGRESS
 IS MISSING GROUPS 3 TO 7
 """
 def alreadyInGroup(matrix_Of_Groups, machine_ID, group_ID):
-    is_Already_In_Group = False
+    is_Member = False
     if(group_ID == '1'):
         for i in range(len(matrix_Of_Groups)):
             if(matrix_Of_Groups[i][0] == 'add'):
                 for j in range(len(matrix_Of_Groups[i]) - 1):
                     if(matrix_Of_Groups[i][j+1] == machine_ID):
-                        is_Already_In_Group = True
+                        is_Member = True
                         break
     if(group_ID == '2'):
         for i in range(len(matrix_Of_Groups)):
             if(matrix_Of_Groups[i][0] == 'sub'):
                 for j in range(len(matrix_Of_Groups[i]) - 1):
                     if(matrix_Of_Groups[i][j+1] == machine_ID):
-                        is_Already_In_Group = True
+                        is_Member = True
                         break
-    return is_Already_In_Group
+    return is_Member
 
 """
 THIS FUNCTION WILL PROVIDE A REUSABLE HANDY MENU
