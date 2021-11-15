@@ -16,7 +16,7 @@ def main():
     When a group does not exist the group id is replaced with (empty)
     When the group has spots available, those spots are filled with (nm) representing NO MEMBER
     """
-    matrix_Of_Groups = np.array([['add','m4','nm', 'nm'],
+    matrix_Of_Groups = np.array([['add','m4','m1', 'nm'],
                                  ['sub', 'm2', 'm3', 'nm'],
                                  ['mul', 'm1', 'm5', 'nm'],
                                  ['empty','nm','nm', 'nm'],
@@ -48,24 +48,24 @@ def userControler(matrix_Of_Groups, machine_ID):
         if opt == '1':
             matrix_Of_Groups = createGroup(matrix_Of_Groups, machine_ID)
             """
-            EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE SUM GROUP
+            EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE ADD GROUP
             """
 
         if opt == '2':
             matrix_Of_Groups = deleteGroup(matrix_Of_Groups, machine_ID)
             """
-            EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE GROUP SUM
-            YO HAVE JUST DONE THIS AND SHALL NOW WORK ON THE ENTER GROUP FUNCTION
+            EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE GROUP ADD
             """
         if opt == '3':
             matrix_Of_Groups = enterGroup(matrix_Of_Groups, machine_ID)
             """
-            EDITORS NOTE: THIS FUNCTION IS NOT CREATED, DOES NOT EXIST
+            EDITORS NOTE: THIS FUNCTION WORKS FOR THE ADD AND SUB GROUPS
             """
         if opt == '4':
             matrix_Of_Groups = exitGroup(matrix_Of_Groups, machine_ID)
             """
-            EDITORS NOTE: THIS FUNCTION IS NOT CREATED, DOES NOT EXIST
+            EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE GROUP ADD
+            
             """
         if opt == '5':
             printMatrix(matrix_Of_Groups)
@@ -91,6 +91,63 @@ def printMatrix(matrix_Of_Groups):
                 if(matrix_Of_Groups[i][j+1] != 'nm'):
                     print("Members: ", matrix_Of_Groups[i][j+1])
 
+"""
+THIS FUNCTION CORRESPONDS TO THE FOURTH OPTION IN THE USER CONTROLER AND WILL REMOVE A MACHINE FROM A GROUP
+IF IT EXISTS
+"""
+def exitGroup(matrix_Of_Groups, machine_ID):
+    print("You have chosen to exit a group")
+    group_Exists = False
+    is_Member = False
+    option = True
+    while option:
+        printMenu()
+        group_ID = input("Which group would you like to exit: ")
+        """
+        IF THE USER SELECTS 1 WE WILL DELETE THE MACHINE FROM THE ADDING GROUP
+        HOWEVER WE MUST FIRS CHECK IF THE GROUP EXISTS AND IF THE MACHINE IS A MEMBER OF THE GROUP
+        """
+        if(group_ID == '1'):
+            group_Exists = alreadyGroup(matrix_Of_Groups, group_ID)
+            if(group_Exists == False):
+                print("The group does not exits, therefore you cannot exit")
+                print("Redirecting you to main menu")
+                time.sleep(5)
+                userControl(machine_Of_Groups, machine_ID)
+            if(group_Exists == True):
+                print("The group exists, we will now check if you are a member")
+                is_Member = alreadyInGroup(matrix_Of_Groups, machine_ID, group_ID)
+                if(is_Member == False):
+                    print("You are not a member of this group, therefore you cannot exit it")
+                    print("Redirecting you to the main menu")
+                    time.sleep(5)
+                    userControler(matrix_Of_Groups, machine_ID)
+                if(is_Member == True):
+                    print("You are a member of this group and will now be removed")
+                    matrix_Of_Groups = removeFromGroup(matrix_Of_Groups, machine_ID, group_ID)
+                    print("The new matrix of groups looks like this: ")
+                    printMatrix(matrix_Of_Groups)
+                    time.sleep(5)
+                    option = False
+    return matrix_Of_Groups
+
+
+def removeFromGroup(matrix_Of_Groups, machine_ID, group_ID):
+    if(group_ID == '1'):
+        print("\n")
+        print("You are exiting the add group")
+        for i in range(len(matrix_Of_Groups)):
+            if(matrix_Of_Groups[i][0] == 'add'):
+                for j in range(len(matrix_Of_Groups[i]) - 1):
+                    if(matrix_Of_Groups[i][j + 1] == machine_ID):
+                        matrix_Of_Groups[i][j + 1] = "nm"
+                        break
+    return matrix_Of_Groups
+"""
+THIS FUNCTION CORRESPONDS TO THE THIRD OPTION IN THE USER CONTROLER AND WILL ALLOW A MACHINE
+TO ENTER A GROUP IF IT EXISTS AND IF HE IS NOT ALREADY A MEMBER, IN CASE IT DOESNT EXIST IT WILL
+GIVE THE USER THE POSIBILITY TO CREATE THE GROUP OR RETURN TO THE MAIN MENU
+"""
 def enterGroup(matrix_Of_Groups, machine_ID):
     print("You have chosen to enter a group")
     group_Exists = False
