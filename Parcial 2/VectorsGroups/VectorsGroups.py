@@ -1,4 +1,3 @@
-import numpy as np
 import time
 import json
 """
@@ -16,13 +15,13 @@ def main():
     When a group does not exist the group id is replaced with (empty)
     When the group has spots available, those spots are filled with (nm) representing NO MEMBER
     """
-    matrix_Of_Groups = np.array([['add','m4','m1', 'nm'],
-                                 ['sub', 'm2', 'm3', 'nm'],
-                                 ['mul', 'm1', 'm5', 'nm'],
-                                 ['empty','nm','nm', 'nm'],
-                                 ['empty','nm','nm', 'nm'],
-                                 ['empty','nm','nm', 'nm'],
-                                 ['empty','nm','nm', 'nm']])
+    matrix_Of_Groups =  [['add','m4','m1', 'nm'],
+                        ['sub', 'm2', 'm3', 'nm'],
+                        ['mul', 'm1', 'm5', 'nm'],
+                        ['empty','nm','nm', 'nm'],
+                        ['empty','nm','nm', 'nm'],
+                        ['empty','nm','nm', 'nm'],
+                        ['empty','nm','nm', 'nm']]
     """
     This id will help identify the computer
     """
@@ -84,12 +83,11 @@ def userControler(matrix_Of_Groups, machine_ID):
         print("\n")
 
 def compactJson(matrix_Of_Groups, machine_ID):
-    group_Matrix = matrix_Of_Groups.tolist()
-    data_Set = {"groups": group_Matrix, "machine": machine_ID}
+    data_Set = {"groups": matrix_Of_Groups, "machine": machine_ID}
     data = json.dumps(data_Set)
     print(data)
     matrix_Of_Groups = showJson(data)
-    returns matrix_Of_Points
+    return matrix_Of_Groups
 
 def showJson(data):
     json_Object = json.loads(data)
