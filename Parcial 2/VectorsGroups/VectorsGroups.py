@@ -40,6 +40,7 @@ def userControler(matrix_Of_Groups, machine_ID):
         print("Press 4 to exit a group")
         print("Press 5 to show the matrix of groups")
         print("Press 6 to send a message to a group")
+        print("Press 7 to compact on a JSON")
         opt = input("Please enter your selection:")
         print("\n")
         """
@@ -65,7 +66,7 @@ def userControler(matrix_Of_Groups, machine_ID):
             matrix_Of_Groups = exitGroup(matrix_Of_Groups, machine_ID)
             """
             EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE GROUP ADD
-            
+
             """
         if opt == '5':
             printMatrix(matrix_Of_Groups)
@@ -76,8 +77,24 @@ def userControler(matrix_Of_Groups, machine_ID):
             sendMessageGroup(matrix_Of_Groups, machine_ID)
             """
             EDITORS NOTE: THIS FUNCTION IS NOT CREATED, DOES NOT EXIST
+            THIS IS THE NEXT STEP
             """
+        if opt == '7':
+            matrix_Of_Groups = compactJson(matrix_Of_Groups, machine_ID)
         print("\n")
+
+def compactJson(matrix_Of_Groups, machine_ID):
+    group_Matrix = matrix_Of_Groups.tolist()
+    data_Set = {"groups": group_Matrix, "machine": machine_ID}
+    data = json.dumps(data_Set)
+    print(data)
+    matrix_Of_Groups = showJson(data)
+    returns matrix_Of_Points
+
+def showJson(data):
+    json_Object = json.loads(data)
+    matrix_Of_Groups = json_Object["groups"]
+    return matrix_Of_Groups
 """
 THIS FUNCTION CORRESPONDS TO THE FIFTH OPTION IN THE USER CONTROLER AND WILL SHOW THE
 USER THE GROUPS WITH ALL THEIR RESPECTIVE MEMBERS
