@@ -11,7 +11,7 @@ print("Group server socket created")
 server_socket.bind((host, port))
 print("Group server socket connected to: ", localhost)
 
-matrix_of_groups =  [['add','m4','m1', 'nm', 'nm'],
+matrix_Of_Groups =  [['add','m4','m1', 'nm', 'nm'],
                     ['sub', 'm2', 'm3', 'nm', 'nm'],
                     ['mul', 'm1', 'm4', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm'],
@@ -19,7 +19,7 @@ matrix_of_groups =  [['add','m4','m1', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm']]
 
-matrix_of_clients = [['m1', 'na'],
+matrix_Of_Clients = [['m1', 'na'],
                      ['m2', 'na'],
                      ['m3', 'na'],
                      ['m4', 'na']]
@@ -41,11 +41,11 @@ def main():
 THIS FUNCTION ADDS A CLIENT WITH ITS ADDRESS TO THE CLIENTS MATRIX
 """
 def add_Client():
-    for i in range(len(matrix_of_clients)):
-        if(matrix_of_clients[i][0] == machine_id):
-            matrix_of_clients[i][1] = address
+    for i in range(len(matrix_Of_Clients)):
+        if(matrix_Of_Clients[i][0] == machine_id):
+            matrix_Of_Clients[i][1] = address
             break
-    return matrix_of_clients
+    return matrix_Of_Clients
 
 
 """
@@ -54,7 +54,7 @@ AND WILL ROUTE THE REQUEST ACCORDINGLY
 """
 def handle_Client(client_information):
     client = client_information[0]
-    machine_id = client_information[1]
+    machine_ID = client_information[1]
     option = True
     while option:
         try:
@@ -69,10 +69,10 @@ def handle_Client(client_information):
                 M2
                 M3 ETC
                 """
-                machine_id = data.get("machine")
+                machine_ID = data.get("machine")
                 """
                 THE OPERATION VARIABLE WILL TELL ME IF THE USER WANTS TO:
-                EXECUTE AN OPERATION FROM THE GROUP MANIPULATION PERSPECTIVE, IE CREATE, DELETE, ETC
+                EXECUTE AN OPERATION FROM THE GROUP MANIPULATION PERSPECTIVE, IE. CREATE, DELETE, ETC
                 EXECUTE A MATHEMATICA OPERATION ADD, SUB, MULY, DIVIDE
                 TURN IN A RESULT FROM A REQUEST GIVEN BY THE SERVER
                 """
@@ -85,6 +85,7 @@ def handle_Client(client_information):
                 """
                 information = data.get("information")
                 """
+                THIS IF WILL TELL US IF THE USER WANTS TO MANIPULATE THE MATRIX OF GROUPS
                 """
                 if(operation == 'group'):
                     print("The user wants to manipulate the matrix of groups")
@@ -98,44 +99,142 @@ def handle_Client(client_information):
                     6 SEND A MESSAGE TO ALL MEMBERS OF A GROUP // NOT CREATED
                     """
                     if(operation == '1'):
-                        matrix_Of_Groups = createGroup(matrix_Of_Groups, machine_ID)
+                        matrix_Of_Groups = createGroup(matrix_Of_Groups, machine_ID, information)
                         """
                         EDITORS NOTE: THIS FUNCTION WORKS FOR THE ADD AND SUB GROUPS
                         """
                     if(operation == '2'):
-                        matrix_Of_Groups = deleteGroup(matrix_Of_Groups, machine_ID)
+                        matrix_Of_Groups = deleteGroup(matrix_Of_Groups, machine_ID, information)
                         """
                         EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE GROUP ADD
                         """
                     if(operation == '3'):
-                        matrix_Of_Groups = enterGroup(matrix_Of_Groups, machine_ID)
+                        matrix_Of_Groups = enterGroup(matrix_Of_Groups, machine_ID, information)
                         """
                         EDITORS NOTE: THIS FUNCTION WORKS FOR THE ADD AND SUB GROUPS
                         """
+                    if(operacion == '4'):
+                        matrix_Of_Groups = exitGroup(matrix_Of_Groups, machine_ID, information)
+                        """
+                        EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE GROUP ADD
+                        """
+                    if(operacion == '5'):
+                        """
+                        EDITORS NOTE
+                        THIS FUNCTION WILL NOT EXIST IN THE SERVER, IT WILL SEND THE MATRIX TO THE CLIENT
+                        AND THE CLIENT WILL PRINT AND VIEW IT
+                        """
+                        broadcast(matrix_Of_Groups, matrix_Of_Clients, machine_ID, operation, information)
+                """
+                THIS IF WILL TELL US IF THE USER WANTS TO PERFORM A MATH OPERATION
+                """
+                if(operation == 'math'):
+                    print("The user wants to make a math operation")
+                    """
+                    WE SHALL DEAL WITH THE OPTIONS IN ORDER
+                    1 add // NOT CREATED
+                    2 sub // NOT CREATED
+                    3 mul // NOT CREATED
+                    4 div // NOT CREATED
+                    5 pow // NOT CREATED
+                    6 rad // NOT CREATED
+                    7 log // NOT CREATED
+                    """
+
+                    """
+                    THIS IF WILL TELL US IF THE USER IS SENDING THE RESULT OF AN OPERATION BACK AT US
+                    WE WILL MAKE THIS A PART OF THE MATH OPERATION AND WILL HAVE TO STRUCTURE IT ACCORDINGLE
+                    WE KNOW WHO WANTS THE RESULT AND WHO WILL PERFORM THE OPERATION
+                    WE NEED TO SEND AND RECIEVE MULTIPLE INFORMATION FROM MULTIPLE CLIENTS 
+                    """
+                    if(operation == 'result'):
+
 
 
         except:
             client.close()
-            for i in range(len(matrix_of_clients)):
-                if(matrix_of_clients[i][0] == machine_id):
-                    matrix_of_clients[i][1] = 'na'
+            for i in range(len(matrix_Of_Clients)):
+                if(matrix_Of_Clients[i][0] == machine_ID):
+                    matrix_Of_Clients[i][1] = 'na'
                     break
 
+"""
+THIS FUNCTION CORRESPONDS TO THE FIFTH OPTION IN THE USER CONTROLER AND WILL RECIEVE
+THE INFORMATION THAT THE CLIENTS REQUIRES AND SENDS IT TO HIM
+EDITORS NOTE: THIS FUNCTION IS NOT READY
+YOU ARE FIGURING OUT HOW TO HANDLE THIS FUNCTION
+"""
+def broadcast(matrix_Of_Groups, matrix_Of_Clients, machine_ID, operation, information):
+    print("You are about to boradcast, however we must now sort some things out")
+    print("Who are we going to broadcast to")
+    print("What information are we going to broadcast")
 
+
+
+"""
+THIS FUNCTION CORRESPONDS TO THE FOURTH OPTION IN THE USER CONTROLER AND WILL REMOVE A MACHINE FROM A GROUP
+IF IT EXISTS
+"""
+def exitGroup(matrix_Of_Groups, machine_ID, information):
+    print("You have chosen to exit a group")
+    group_Exists = False
+    is_Member = False
+    option = True
+    while option:
+        group_ID = information
+        """
+        IF THE USER SELECTS 1 WE WILL DELETE THE MACHINE FROM THE ADDING GROUP
+        HOWEVER WE MUST FIRS CHECK IF THE GROUP EXISTS AND IF THE MACHINE IS A MEMBER OF THE GROUP
+        """
+        if(group_ID == '1'):
+            group_Exists = alreadyGroup(matrix_Of_Groups, group_ID)
+            if(group_Exists == False):
+                print("The group does not exits, therefore you cannot exit")
+                print("Redirecting you to main menu")
+                time.sleep(5)
+                userControl(machine_Of_Groups, machine_ID)
+            if(group_Exists == True):
+                print("The group exists, we will now check if you are a member")
+                is_Member = alreadyInGroup(matrix_Of_Groups, machine_ID, group_ID)
+                if(is_Member == False):
+                    print("You are not a member of this group, therefore you cannot exit it")
+                    print("Redirecting you to the main menu")
+                    time.sleep(5)
+                    userControler(matrix_Of_Groups, machine_ID)
+                if(is_Member == True):
+                    print("You are a member of this group and will now be removed")
+                    matrix_Of_Groups = removeFromGroup(matrix_Of_Groups, machine_ID, group_ID)
+                    print("The new matrix of groups looks like this: ")
+                    printMatrix(matrix_Of_Groups)
+                    time.sleep(5)
+                    option = False
+    return matrix_Of_Groups
+
+
+def removeFromGroup(matrix_Of_Groups, machine_ID, group_ID):
+    if(group_ID == '1'):
+        print("\n")
+        print("You are exiting the add group")
+        for i in range(len(matrix_Of_Groups)):
+            if(matrix_Of_Groups[i][0] == 'add'):
+                for j in range(len(matrix_Of_Groups[i]) - 1):
+                    if(matrix_Of_Groups[i][j + 1] == machine_ID):
+                        matrix_Of_Groups[i][j + 1] = "nm"
+                        break
+    return matrix_Of_Groups
 
 """
 THIS FUNCTION CORRESPONDS TO THE THIRD OPTION IN THE USER CONTROLER AND WILL ALLOW A MACHINE
 TO ENTER A GROUP IF IT EXISTS AND IF HE IS NOT ALREADY A MEMBER, IN CASE IT DOESNT EXIST IT WILL
 GIVE THE USER THE POSIBILITY TO CREATE THE GROUP OR RETURN TO THE MAIN MENU
 """
-def enterGroup(matrix_Of_Groups, machine_ID):
+def enterGroup(matrix_Of_Groups, machine_ID, information):
     print("You have chosen to enter a group")
     group_Exists = False
     is_Member = False
     option = True
     while option:
-        printMenu()
-        group_ID = input("Which group would you like to join: ")
+        group_ID = information
         """
         IF THE USER SELECTS 1 WE WILL INSERT THE MACHINE IN A GROUP FOR ADDING
         HOWEVER WE MUST CHECK IF THAT GROUP ALREADY EXISTS AND IF THE MACHINE IS NOT A MEMBER ALREADY
@@ -155,7 +254,7 @@ def enterGroup(matrix_Of_Groups, machine_ID):
                 if(opt == '0'):
                     print("You have elected not to create the group")
                     print("Redirecting you to main menu")
-                    time.sleep(5)
+                    time.sleep(2)
                     userControl(machine_Of_Groups, machine_ID)
                 if(opt == '1'):
                     print("You have elected to create the group")
@@ -171,7 +270,7 @@ def enterGroup(matrix_Of_Groups, machine_ID):
                 if(is_Member == True):
                     print("You are already a member of this group and therefore cannot join")
                     print("Redirecting you to main menu")
-                    time.sleep(5)
+                    time.sleep(2)
                     userControler(matrix_Of_Groups, machine_ID)
                 if(is_Member == False):
                     print("You are not a member of this group and therefore may join")
@@ -179,7 +278,7 @@ def enterGroup(matrix_Of_Groups, machine_ID):
                     matrix_Of_Groups = joinGroup(matrix_Of_Groups, machine_ID, group_ID)
                     print("The new matrix of groups looks like this: ")
                     printMatrix(matrix_Of_Groups)
-                    time.sleep(5)
+                    time.sleep(2)
                     option = False
         if(group_ID == '2'):
             group_Exists = alreadyGroup(matrix_Of_Groups, group_ID)
@@ -192,7 +291,7 @@ def enterGroup(matrix_Of_Groups, machine_ID):
                 if(opt == '0'):
                     print("You have elected not to create the group")
                     print("Redirecting you to main menu")
-                    time.sleep(5)
+                    time.sleep(2)
                     userControl(machine_Of_Groups, machine_ID)
                 if(opt == '1'):
                     print("You have elected to create the group")
@@ -208,7 +307,7 @@ def enterGroup(matrix_Of_Groups, machine_ID):
                 if(is_Member == True):
                     print("You are already a member of this group and therefore cannot join")
                     print("Redirecting you to main menu")
-                    time.sleep(5)
+                    time.sleep(2)
                     userControler(matrix_Of_Groups, machine_ID)
                 if(is_Member == False):
                     print("You are not a member of this group and therefore may join")
@@ -216,7 +315,7 @@ def enterGroup(matrix_Of_Groups, machine_ID):
                     matrix_Of_Groups = joinGroup(matrix_Of_Groups, machine_ID, group_ID)
                     print("The new matrix of groups looks like this: ")
                     printMatrix(matrix_Of_Groups)
-                    time.sleep(5)
+                    time.sleep(2)
                     option = False
         print("\n")
         return matrix_Of_Groups
@@ -252,13 +351,12 @@ EDITORS NOTE: IN THE PROCESS OF CREATING THE FUNCION
 IN THE PROCESS OF CREATING DELETE FOR GROUP
 STILL MISSING GROUPS 2 TO 7
 """
-def deleteGroup(matrix_Of_Groups, machine_ID):
+def deleteGroup(matrix_Of_Groups, machine_ID, information):
     print("You have chosen to delete a group")
     is_Already_Group = False
     option = True
     while option:
-        printMenu()
-        group_ID = input("Which group would you like to delete: ")
+        group_ID = information
         """
         IF THE USER SELECTS 1 WE WILL DELETE A GROUP FOR ADDING
         HOWEVER WE MUST CHECK IF THAT GROUP ALREADY EXISTS, AND IF SO
@@ -271,14 +369,14 @@ def deleteGroup(matrix_Of_Groups, machine_ID):
             if(is_Already_Group == False):
                 print("The group does not exist and therefore cannot be deleted")
                 print("Redirecting you to main menu")
-                time.sleep(5)
+                time.sleep(2)
                 userControler(matrix_Of_Groups, machine_ID)
             if(is_Already_Group == True):
                 print("The adding group exists, and will now be deleted")
                 matrix_Of_Groups = removeGroup(matrix_Of_Groups, group_ID)
                 print("The new matrix of groups looks like this: ")
                 printMatrix(matrix_Of_Groups)
-                time.sleep(5)
+                time.sleep(2)
                 option = False
         print("\n")
         return matrix_Of_Groups
@@ -305,13 +403,12 @@ EDITORS NOTE: THIS FUNCTION IS IN PROGRESS
 ITS STILL MISSING ALL THE GROUPS FROM 2 TO 7
 HOWEVER THE CODE FORM GROUP 1 IS REUSABLE, SO ITS A MATTER OF TESTING EVERYTHING FIRST BEFORE GENERALIZING
 """
-def createGroup(matrix_Of_Groups, machine_ID):
+def createGroup(matrix_Of_Groups, machine_ID, information):
     print("You have chosen to create a group")
     is_Already_Group = False
     option = True
     while option:
-        printMenu()
-        group_ID = input("Which group would you like to create: ")
+        group_ID = information
         """
         IF THE USER SELECTS 1 WE WILL CREATE A GROUP FOR ADDING
         HOWEVER WE MUST CHECK IF THAT GROUP ALREADY EXISTS, AND IF SO
@@ -323,14 +420,14 @@ def createGroup(matrix_Of_Groups, machine_ID):
             is_Already_Group = alreadyGroup(matrix_Of_Groups, group_ID)
             if(is_Already_Group == True):
                 print("The group add already exists")
-                time.sleep(5)
+                time.sleep(2)
                 userControler(matrix_Of_Groups, machine_ID)
             if(is_Already_Group == False):
                 print("The group does not exist, creating now, you will be the leader")
                 matrix_Of_Groups = addGroupToMatrix(matrix_Of_Groups, machine_ID, group_ID)
                 print("The new matrix of groups looks like this: ")
                 printMatrix(matrix_Of_Groups)
-                time.sleep(5)
+                time.sleep(2)
                 option = False
     return matrix_Of_Groups
 
@@ -404,8 +501,8 @@ def main_Control():
         client, address = server.accept()
         print("Connection is established with ", {str(address)})
         client.send("MachineID".encode("utf-8"))
-        machine_id = client.recv(1024).decode("utf-8")
-        matrix_of_clients = add_Client(machine_id, address)
+        machine_ID = client.recv(1024).decode("utf-8")
+        matrix_Of_Clients = add_Client(machine_ID, address)
         client_information = [client, machine_ID]
         handle_Client(client_information)
 
