@@ -3,7 +3,7 @@ import json
 
 
 HEADER_LENGTH = 10
-host = 'localhost'
+host = '127.0.0.1'
 port = 5432
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 print("Group server socket created")
@@ -58,10 +58,11 @@ def handle_Client(client_information):
     option = True
     while option:
         try:
+            client.send("Request".encode("utf-8"))
             data = client.recv(4096)
             if data:
                 print("Data recieved successfully")
-                data = json.loads(data.decode())
+                data = json.loads(data.decode("utf-8"))
                 """
                 MACHINE ID WILL HELP US IDENTIFY EACH SEPARATE USER
                 EACH MACHINE IS ASSIGNED AN ID AS SOONAS CREATED
