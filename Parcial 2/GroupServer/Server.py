@@ -35,7 +35,7 @@ def main():
     """
 
 
-    main_Control()
+    main_Control(matrix_Of_Groups, matrix_Of_Clients)
 
 """
 THIS FUNCTION ADDS A CLIENT WITH ITS ADDRESS TO THE CLIENTS MATRIX
@@ -91,40 +91,46 @@ def handle_Client(client_information):
                     print("The user wants to manipulate the matrix of groups")
                     """
                     WE SHALL DEAL WITH THE OPTIONS IN ORDER
-                    1 CREATE GROUP // NOT CREATED
-                    2 DELETE GROUP // NOT CREATED
-                    3 ENTER GROUP // NOT CREATED
-                    4 EXIT A GROUP // NOT CREATED
-                    5 SHOW THE MATRIX OF GROUPS // NOT CREATED
-                    6 SEND A MESSAGE TO ALL MEMBERS OF A GROUP // NOT CREATED
+                    1 CREATE GROUP // MISSING BROADCAST OF RESULTING GROUPS TO USER
+                    2 DELETE GROUP // MISSING BROADCAST OF RESULTING GROUPS TO USER
+                    3 ENTER GROUP // MISSING BROADCAST OF RESULTING GROUPS TO USER
+                    4 EXIT A GROUP // MISSING BROADCAST OF RESULTING GROUPS TO USER
+                    5 SHOW THE MATRIX OF GROUPS // MISSING BROADCAST OF RESULTING GROUPS TO USER
+                    6 SEND A MESSAGE TO ALL MEMBERS OF A GROUP // MISSING BROADCAST OF RESULTING GROUPS TO USER
                     """
-                    if(operation == '1'):
-                        matrix_Of_Groups = createGroup(matrix_Of_Groups, machine_ID, information)
+                    if(information == '1'):
+                        matrix_Of_Groups = createGroup(matrix_Of_Groups,matrix_Of_Clients, machine_ID, client, operation, information)
                         """
                         EDITORS NOTE: THIS FUNCTION WORKS FOR THE ADD AND SUB GROUPS
                         """
-                    if(operation == '2'):
-                        matrix_Of_Groups = deleteGroup(matrix_Of_Groups, machine_ID, information)
+                    if(information == '2'):
+                        matrix_Of_Groups = deleteGroup(matrix_Of_Groups,matrix_Of_Clients, machine_ID, client, operation, information)
                         """
                         EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE GROUP ADD
                         """
-                    if(operation == '3'):
-                        matrix_Of_Groups = enterGroup(matrix_Of_Groups, machine_ID, information)
+                    if(information == '3'):
+                        matrix_Of_Groups = enterGroup(matrix_Of_Groups,matrix_Of_Clients, machine_ID, client, operation, information)
                         """
                         EDITORS NOTE: THIS FUNCTION WORKS FOR THE ADD AND SUB GROUPS
                         """
-                    if(operacion == '4'):
-                        matrix_Of_Groups = exitGroup(matrix_Of_Groups, machine_ID, information)
+                    if(information == '4'):
+                        matrix_Of_Groups = exitGroup(matrix_Of_Groups,matrix_Of_Clients, machine_ID, client, operation, information)
                         """
                         EDITORS NOTE: THIS FUNCTION WORKS ONLY FOR THE GROUP ADD
                         """
-                    if(operacion == '5'):
+                    if(information == '5'):
                         """
                         EDITORS NOTE
                         THIS FUNCTION WILL NOT EXIST IN THE SERVER, IT WILL SEND THE MATRIX TO THE CLIENT
                         AND THE CLIENT WILL PRINT AND VIEW IT
                         """
-                        broadcast(matrix_Of_Groups, matrix_Of_Clients, machine_ID, operation, information)
+                        broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
+                    if(information == '6'):
+                        """
+                        EDITORS NOTE WE MUST RECIEVE THE CLIENT MESSAGE AS WELL
+                        """
+                        broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
+
                 """
                 THIS IF WILL TELL US IF THE USER WANTS TO PERFORM A MATH OPERATION
                 """
@@ -139,15 +145,14 @@ def handle_Client(client_information):
                     5 pow // NOT CREATED
                     6 rad // NOT CREATED
                     7 log // NOT CREATED
+                    THIS SECOND IF WILL CHECK WHICH MATH OPERATION THE USER WOULD LIKE TO DO
                     """
-
-                    """
-                    THIS IF WILL TELL US IF THE USER IS SENDING THE RESULT OF AN OPERATION BACK AT US
-                    WE WILL MAKE THIS A PART OF THE MATH OPERATION AND WILL HAVE TO STRUCTURE IT ACCORDINGLE
-                    WE KNOW WHO WANTS THE RESULT AND WHO WILL PERFORM THE OPERATION
-                    WE NEED TO SEND AND RECIEVE MULTIPLE INFORMATION FROM MULTIPLE CLIENTS 
-                    """
-                    if(operation == 'result'):
+                    if(information == '1'):
+                        """
+                        THIS FIST WILL REPRESENT THE ADDING OPERATION
+                        EDITORS NOTE: YOU MUST NOW CALL THE BROAD CAST FUNCTION
+                        """
+                        broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
 
 
 
@@ -156,18 +161,106 @@ def handle_Client(client_information):
             for i in range(len(matrix_Of_Clients)):
                 if(matrix_Of_Clients[i][0] == machine_ID):
                     matrix_Of_Clients[i][1] = 'na'
+            for i in range(len(matrix_Of_Groups)):
+                for j in range(len(matrix_Of_Groups[i])):
+                    if(matrix_Of_Groups[i][j] == machine_ID):
+                        matrix_Of_Groups[i][j] == 'nm'
                     break
 
 """
-THIS FUNCTION CORRESPONDS TO THE FIFTH OPTION IN THE USER CONTROLER AND WILL RECIEVE
+THIS FUNCTION WILL BROADCAST MESSAGES TO THE CLIENTS CORRESPONDS AND WILL RECIEVE
 THE INFORMATION THAT THE CLIENTS REQUIRES AND SENDS IT TO HIM
 EDITORS NOTE: THIS FUNCTION IS NOT READY
 YOU ARE FIGURING OUT HOW TO HANDLE THIS FUNCTION
+REMEMBER:
+CLIENT - WILL ALLOWS TO COMUNICATE WITH A SPECIFIC CLIENT
+OPERATION - INDICATES WETHER THE USER WANTS TO WORK WITH THE MATRIX OF GROUPS OR MATH OPERATIONS
+INFORMATION - FROM THE THW POSIBLE OPTIONS OF OPERATION THERE ARE WITHIN MULTIPLE OPTIONS REPRESENTED HERE
 """
-def broadcast(matrix_Of_Groups, matrix_Of_Clients, machine_ID, operation, information):
-    print("You are about to boradcast, however we must now sort some things out")
+def broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information):
+    print("You are about to broadcast, however we must now sort some things out")
     print("Who are we going to broadcast to")
     print("What information are we going to broadcast")
+    option = True
+    while option:
+        """
+        WE MUST VERIFY WHAT THE USER WANTS SO WE CAN GIVE IT TO HIM YEAH BABY !!
+        THIS FIRST IF WILL CHECK IF THE USER WANTS TO MANIPULATE THE GROUP MATRIX
+        """
+        if(operation == 'group'):
+            """
+            THIS SECOND IF WILL TELL US THAT THE USER WISHES TO SEE THE MATRIX OF GROUPS
+            SO WE HAVE TO SEND IT TO HIM
+            """
+            if(information == '5'):
+                data_set = {"groups" : matrix_Of_Groups}
+                data = json.dumps(data_set)
+                client.send(data)
+                confirmation_message = client.recv(4096).decode("utf-8")
+            if(information == '6'):
+                """
+                WE MUST RECIEVE FROM THE CLIENT
+                THE MESSAGE HE WANTS TO SEND
+                THE GROUP HE WANTS TO SEND THE MESSAGE TO
+                """
+                client.send("Message&Group").encode("utf-8")
+                message_And_Group = client.recv(4096).decode("utf-8")
+                message_And_Group = json.loads(message_And_Group.decode("utf-8"))
+                arrayData = message_And_Group.get("data")
+                message = arrayData[0]
+                group_Name = arraData[1]
+                group_ID = 'empty'
+                if(group_Name == 'add'):
+                    group_ID = '1'
+                if(group_Name == 'sub'):
+                    group_ID ='2'
+                if(group_Name == 'mul'):
+                    group_ID = '3'
+                if(group_Name == 'div'):
+                    group_ID = '4'
+                if(group_Name == 'pow'):
+                    group_ID = '5'
+                if(group_Name == 'rad'):
+                    group_ID = '6'
+                if(group_Name == 'log'):
+                    group_ID = '7'
+                if(group_ID != 'empty'):
+                    print("The group id was identified successfully")
+                    is_Group = alreadyGroup(matrix_Of_Groups, group_ID)
+                    if(is_Group == True):
+                        print("The group does exist, will now send message")
+                        """
+                        WE NEED TO IDENTIFY ALL THE MEMBERS OF THE GROUP WE ARE
+                        GOING TO SEND A MESSAGE TO
+                        """
+                        array_Of_Members = ['nm','nm', 'nm', 'nm']
+                        for i in range
+
+
+
+
+
+        """
+        THIS FIRST IF WILL CHECK IF THE USER WANTS TO DO A MATH OPERATION
+        """
+        if(operation == 'math'):
+            """
+            THIS SECOND IF WILL CHECK WHICH MATH OPERATION THE USER WOULD LIKE TO DO
+            """
+            if(information == '1'):
+                """
+                THIS FIST WILL REPRESENT THE ADDING OPERATION
+                WE NEED TO CHECK IF THE ADDING GROUP EXISTS
+                IF IT DOES NOT EXIST WE MUST INFORM THE USER SO THAT HE IS RETURNED TO THE MAIN MENU
+                IF IT EXISTS WE MUST FIND IT'S LEADER AND ASK HIM TO CHOOSE WHO WILL DO THE MATH
+                THE LEADER MUST RECIEVE THE MATRIX OF GROUPS TO DO THIS
+                WHEN WE RECIEVE THE MACHINE THAT WILL DO THE MATH
+                WE SEND SET MACHINE THE OPERATION AND THE MACHINE WILL RETURN THE RESULT
+                WHEN THE SERVER GETS THAT RESULT IT RETURNS IT TO THE ORIGINAL CLIENT
+                """
+
+
+
 
 
 
@@ -206,7 +299,13 @@ def exitGroup(matrix_Of_Groups, machine_ID, information):
                     matrix_Of_Groups = removeFromGroup(matrix_Of_Groups, machine_ID, group_ID)
                     print("The new matrix of groups looks like this: ")
                     printMatrix(matrix_Of_Groups)
-                    time.sleep(5)
+                    """
+                    HERE WE SHOULD BROADCAST TO THE CLIENT THE NEW MATRIX OF GROUPS
+                    """
+                    operation = 'group'
+                    information = '5'
+                    broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
+                    time.sleep(2)
                     option = False
     return matrix_Of_Groups
 
@@ -315,6 +414,12 @@ def enterGroup(matrix_Of_Groups, machine_ID, information):
                     matrix_Of_Groups = joinGroup(matrix_Of_Groups, machine_ID, group_ID)
                     print("The new matrix of groups looks like this: ")
                     printMatrix(matrix_Of_Groups)
+                    """
+                    HERE WE SHOULD BROADCAST TO THE CLIENT THE NEW MATRIX OF GROUPS
+                    """
+                    operation = 'group'
+                    information = '5'
+                    broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
                     time.sleep(2)
                     option = False
         print("\n")
@@ -376,6 +481,12 @@ def deleteGroup(matrix_Of_Groups, machine_ID, information):
                 matrix_Of_Groups = removeGroup(matrix_Of_Groups, group_ID)
                 print("The new matrix of groups looks like this: ")
                 printMatrix(matrix_Of_Groups)
+                """
+                HERE WE SHOULD BROADCAST TO THE CLIENT THE NEW MATRIX OF GROUPS
+                """
+                operation = 'group'
+                information = '5'
+                broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
                 time.sleep(2)
                 option = False
         print("\n")
@@ -427,6 +538,12 @@ def createGroup(matrix_Of_Groups, machine_ID, information):
                 matrix_Of_Groups = addGroupToMatrix(matrix_Of_Groups, machine_ID, group_ID)
                 print("The new matrix of groups looks like this: ")
                 printMatrix(matrix_Of_Groups)
+                """
+                HERE WE SHOULD BROADCAST TO THE CLIENT THE NEW MATRIX OF GROUPS
+                """
+                operation = 'group'
+                information = '5'
+                broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
                 time.sleep(2)
                 option = False
     return matrix_Of_Groups
@@ -494,14 +611,14 @@ def alreadyInGroup(matrix_Of_Groups, machine_ID, group_ID):
 THIS FUNCTION IS RESPONSABLE FOR HANDDLING INCOMING MESSAGES AND
 IT WILL EITHER HANDDLE A NEW CLIENT OR A PRE-EXISTING ONE
 """
-def main_Control():
+def main_Control(matrix_Of_Groups, matrix_Of_Clients):
     option = True
     while option:
         print("Group Server is running and listening...")
         client, address = server.accept()
         print("Connection is established with ", {str(address)})
         client.send("MachineID".encode("utf-8"))
-        machine_ID = client.recv(1024).decode("utf-8")
+        machine_ID = client.recv(4096).decode("utf-8")
         matrix_Of_Clients = add_Client(machine_ID, address)
         client_information = [client, machine_ID]
         handle_Client(client_information)
