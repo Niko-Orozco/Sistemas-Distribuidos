@@ -208,36 +208,28 @@ def broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, informatio
                 message_And_Group = json.loads(message_And_Group.decode("utf-8"))
                 arrayData = message_And_Group.get("data")
                 message = arrayData[0]
-                group_Name = arraData[1]
-                group_ID = 'empty'
-                if(group_Name == 'add'):
-                    group_ID = '1'
-                if(group_Name == 'sub'):
-                    group_ID ='2'
-                if(group_Name == 'mul'):
-                    group_ID = '3'
-                if(group_Name == 'div'):
-                    group_ID = '4'
-                if(group_Name == 'pow'):
-                    group_ID = '5'
-                if(group_Name == 'rad'):
-                    group_ID = '6'
-                if(group_Name == 'log'):
-                    group_ID = '7'
-                if(group_ID != 'empty'):
-                    print("The group id was identified successfully")
-                    is_Group = alreadyGroup(matrix_Of_Groups, group_ID)
-                    if(is_Group == True):
-                        print("The group does exist, will now send message")
-                        """
-                        WE NEED TO IDENTIFY ALL THE MEMBERS OF THE GROUP WE ARE
-                        GOING TO SEND A MESSAGE TO
-                        """
-                        array_Of_Members = ['nm','nm', 'nm', 'nm']
-                        for i in range
-
-
-
+                group_ID = arraData[1]
+                is_Group = alreadyGroup(matrix_Of_Groups, group_ID)
+                if(is_Group == True):
+                    print("The group does exist, will now send message")
+                    """
+                    WE NEED TO IDENTIFY ALL THE MEMBERS OF THE GROUP WE ARE
+                    GOING TO SEND A MESSAGE TO
+                    """
+                    array_Of_Members = ['nm','nm', 'nm', 'nm']
+                    if(group_ID == '1'):
+                        for i in range(len(matrix_Of_Groups)):
+                            if(matrix_Of_Groups[i][0] == 'add'):
+                                for j in range(len(matrix_Of_Groups[i]) - 1):
+                                    for k in range(len(array_Of_Members)):
+                                        array_Of_Members[k] = matrix_Of_Groups[i][j+1]
+                        for i in range(len(array_Members)):
+                            for j in range(len(matrix_Of_Clients)):
+                                if(array_Members[i] == matrix_Of_Clients[j][0]):
+                                    member_address = matrix_Of_Clients[j][1]
+                                    server_socket.sendto(message.encode(utf-8), member_address)
+                                    confirmation_message = server_socket.recv(4096).decode("utf-8")
+                                    print(confirmation_message)
 
 
         """
@@ -346,21 +338,10 @@ def enterGroup(matrix_Of_Groups, machine_ID, information):
             group_Exists = alreadyGroup(matrix_Of_Groups, group_ID)
             if(group_Exists == False):
                 print("The group does not exist, therefore you cannot join")
-                print("Would you like to create the adding group")
-                print("Press 1 for yes")
-                print("Press 0 for no")
-                opt = input("Please enter your selection: ")
-                if(opt == '0'):
-                    print("You have elected not to create the group")
-                    print("Redirecting you to main menu")
-                    time.sleep(2)
-                    userControl(machine_Of_Groups, machine_ID)
-                if(opt == '1'):
-                    print("You have elected to create the group")
-                    print("Redirecting you the creating menu")
-                    print("\n")
-                    matrix_Of_Groups = createGroup(matrix_Of_Groups, machine_ID)
-                    option = False
+                client.send("The group does not exist, therefore you cannot join").encode("utf-8")
+                confirmation_message = client.recv(4096).decode("utf-8")
+                time.sleep(2)
+                option = False
             if(group_Exists == True):
                 print("The group does exist")
                 print("However in order to join you cannot already be a member")
@@ -368,36 +349,27 @@ def enterGroup(matrix_Of_Groups, machine_ID, information):
                 is_Member = alreadyInGroup(matrix_Of_Groups, machine_ID, group_ID)
                 if(is_Member == True):
                     print("You are already a member of this group and therefore cannot join")
-                    print("Redirecting you to main menu")
+                    client.send("You are already a member of this group and therefore cannot join").encode("utf-8")
+                    confirmation_message = client.recv(4096).decode("utf-8")
                     time.sleep(2)
-                    userControler(matrix_Of_Groups, machine_ID)
+                    option = False
                 if(is_Member == False):
                     print("You are not a member of this group and therefore may join")
                     print("Joining group")
                     matrix_Of_Groups = joinGroup(matrix_Of_Groups, machine_ID, group_ID)
-                    print("The new matrix of groups looks like this: ")
-                    printMatrix(matrix_Of_Groups)
+                    operation = 'group'
+                    information = '5'
+                    broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
                     time.sleep(2)
                     option = False
         if(group_ID == '2'):
             group_Exists = alreadyGroup(matrix_Of_Groups, group_ID)
             if(group_Exists == False):
                 print("The group does not exist, therefore you cannot join")
-                print("Would you like to create the subtracting group")
-                print("Press 1 for yes")
-                print("Press 0 for no")
-                opt = input("Please enter your selection: ")
-                if(opt == '0'):
-                    print("You have elected not to create the group")
-                    print("Redirecting you to main menu")
-                    time.sleep(2)
-                    userControl(machine_Of_Groups, machine_ID)
-                if(opt == '1'):
-                    print("You have elected to create the group")
-                    print("Redirecting you the creating menu")
-                    print("\n")
-                    matrix_Of_Groups = createGroup(matrix_Of_Groups, machine_ID)
-                    option = False
+                client.send("The group does not exist, therefore you cannot join").encode("utf-8")
+                confirmation_message = client.recv(4096).decode("utf-8")
+                time.sleep(2)
+                option = False
             if(group_Exists == True):
                 print("The group does exist")
                 print("However in order to join you cannot already be a member")
@@ -405,18 +377,14 @@ def enterGroup(matrix_Of_Groups, machine_ID, information):
                 is_Member = alreadyInGroup(matrix_Of_Groups, machine_ID, group_ID)
                 if(is_Member == True):
                     print("You are already a member of this group and therefore cannot join")
-                    print("Redirecting you to main menu")
+                    client.send("You are already a member of this group and therefore cannot join").encode("utf-8")
+                    confirmation_message = client.recv(4096).decode("utf-8")
                     time.sleep(2)
-                    userControler(matrix_Of_Groups, machine_ID)
+                    option = False
                 if(is_Member == False):
                     print("You are not a member of this group and therefore may join")
                     print("Joining group")
                     matrix_Of_Groups = joinGroup(matrix_Of_Groups, machine_ID, group_ID)
-                    print("The new matrix of groups looks like this: ")
-                    printMatrix(matrix_Of_Groups)
-                    """
-                    HERE WE SHOULD BROADCAST TO THE CLIENT THE NEW MATRIX OF GROUPS
-                    """
                     operation = 'group'
                     information = '5'
                     broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
@@ -456,7 +424,7 @@ EDITORS NOTE: IN THE PROCESS OF CREATING THE FUNCION
 IN THE PROCESS OF CREATING DELETE FOR GROUP
 STILL MISSING GROUPS 2 TO 7
 """
-def deleteGroup(matrix_Of_Groups, machine_ID, information):
+def deleteGroup(matrix_Of_Groups,matrix_Of_Clients, machine_ID, client, operation, information):
     print("You have chosen to delete a group")
     is_Already_Group = False
     option = True
@@ -473,9 +441,12 @@ def deleteGroup(matrix_Of_Groups, machine_ID, information):
             is_Already_Group = alreadyGroup(matrix_Of_Groups, group_ID)
             if(is_Already_Group == False):
                 print("The group does not exist and therefore cannot be deleted")
-                print("Redirecting you to main menu")
+                print("Informing user")
+                client.send("The group does not exist and therefore cannot be deleted").encode("utf-8")
+                confirmation_message = client.recv(4096).decode("utf-8")
+                print(confirmation_message)
                 time.sleep(2)
-                userControler(matrix_Of_Groups, machine_ID)
+                option = False
             if(is_Already_Group == True):
                 print("The adding group exists, and will now be deleted")
                 matrix_Of_Groups = removeGroup(matrix_Of_Groups, group_ID)
@@ -514,7 +485,7 @@ EDITORS NOTE: THIS FUNCTION IS IN PROGRESS
 ITS STILL MISSING ALL THE GROUPS FROM 2 TO 7
 HOWEVER THE CODE FORM GROUP 1 IS REUSABLE, SO ITS A MATTER OF TESTING EVERYTHING FIRST BEFORE GENERALIZING
 """
-def createGroup(matrix_Of_Groups, machine_ID, information):
+def createGroup(matrix_Of_Groups,matrix_Of_Clients, machine_ID, client, operation, information):
     print("You have chosen to create a group")
     is_Already_Group = False
     option = True
@@ -531,8 +502,11 @@ def createGroup(matrix_Of_Groups, machine_ID, information):
             is_Already_Group = alreadyGroup(matrix_Of_Groups, group_ID)
             if(is_Already_Group == True):
                 print("The group add already exists")
+                client.send("The group add already exists").encode("utf-8")
+                confirmation_message = client.recv(4096).decode("utf-8")
+                print(confirmation_message)
                 time.sleep(2)
-                userControler(matrix_Of_Groups, machine_ID)
+                option = False
             if(is_Already_Group == False):
                 print("The group does not exist, creating now, you will be the leader")
                 matrix_Of_Groups = addGroupToMatrix(matrix_Of_Groups, machine_ID, group_ID)
