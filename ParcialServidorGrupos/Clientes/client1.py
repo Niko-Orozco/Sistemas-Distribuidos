@@ -69,7 +69,7 @@ def group_Menu(machine_id):
     INFORMATION WILL LET THE SERVER KNOW
     FROM THIS MENU OF OPTION WHAT THE USER WANTS TO DO
     """
-    information = '0'
+
     option = True
     while option:
         print("Welcome to this service")
@@ -80,8 +80,8 @@ def group_Menu(machine_id):
         print("Press 5 to show the matrix of groups")
         print("Press 6 to send a message to a group")
         opt = input("Please enter your selection:")
+        information = opt
         print("\n")
-
         """
         THIS PART WILL CONTROL WHAT HAPPENS BASED ON YOUR SELECTION
         """
@@ -96,10 +96,11 @@ def group_Menu(machine_id):
             print("Press 6 for radical")
             print("Press 7 for logarithm")
             op = input("Please enter your selection:")
+            detail = opt
             print("\n")
             if(op == '1'):
                 information = '1'
-                data_array = [machine_id, operation, information]
+                data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
                 client_socket.sendto(data.encode(), (host, 5432))
@@ -135,7 +136,7 @@ def group_Menu(machine_id):
                     client_Main_Menu(machine_id)
             if(op == '2'):
                 information = '2'
-                data_array = [machine_id, operation, information]
+                data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
                 client_socket.sendto(data.encode(), (host, 5432))
@@ -171,7 +172,7 @@ def group_Menu(machine_id):
                     client_Main_Menu(machine_id)
             if(op == '3'):
                 information = '3'
-                data_array = [machine_id, operation, information]
+                data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
                 client_socket.sendto(data.encode(), (host, 5432))
@@ -207,7 +208,7 @@ def group_Menu(machine_id):
                     client_Main_Menu(machine_id)
             if(op == '4'):
                 information = '4'
-                data_array = [machine_id, operation, information]
+                data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
                 client_socket.sendto(data.encode(), (host, 5432))
@@ -244,7 +245,7 @@ def group_Menu(machine_id):
 
             if(op == '5'):
                 information = '5'
-                data_array = [machine_id, operation, information]
+                data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
                 client_socket.sendto(data.encode(), (host, 5432))
@@ -281,7 +282,7 @@ def group_Menu(machine_id):
 
             if(op == '6'):
                 information = '6'
-                data_array = [machine_id, operation, information]
+                data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
                 client_socket.sendto(data.encode(), (host, 5432))
@@ -318,7 +319,7 @@ def group_Menu(machine_id):
 
             if(op == '7'):
                 information = '7'
-                data_array = [machine_id, operation, information]
+                data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
                 client_socket.sendto(data.encode(), (host, 5432))
@@ -338,6 +339,270 @@ def group_Menu(machine_id):
 
                 if(confirmation_message == 'DE'):
                     print("The group does not exist and will now be created")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+        if(opt == '2'):
+            print("You have chosen to delete a group")
+            print("Which group would you like to delete: ")
+            print("Press 1 for add")
+            print("Press 2 for subtract")
+            print("Press 3 for multiply")
+            print("Press 4 for divide")
+            print("Press 5 for power")
+            print("Press 6 for radical")
+            print("Press 7 for logarithm")
+            op = input("Please enter your selection:")
+            detail = op
+            print("\n")
+            if(op == '1'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The sum group did not exist, redirecting you to menu")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'DE'):
+                    print("The group exists, deleting the group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '2'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The sub group did not exist, redirecting you to menu")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'DE'):
+                    print("The group exists, deleting the group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '3'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The mul group did not exist, redirecting you to menu")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'DE'):
+                    print("The group exists, deleting the group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '4'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The div group did not exist, redirecting you to menu")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'DE'):
+                    print("The group exists, deleting the group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '5'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The pow group did not exist, redirecting you to menu")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'DE'):
+                    print("The group exists, deleting the group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '6'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The rad group did not exist, redirecting you to menu")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'DE'):
+                    print("The group exists, deleting the group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '7'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The log group did not exist, redirecting you to menu")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'DE'):
+                    print("The group exists, deleting the group")
                     client_socket.sendto("Proceed".encode(), (host, 5432))
 
                     data, server_addr = client_socket.recvfrom(4096)
