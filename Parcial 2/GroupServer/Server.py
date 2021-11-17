@@ -5,11 +5,11 @@ import json
 HEADER_LENGTH = 10
 host = '127.0.0.1'
 port = 5432
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 print("Group server socket created")
 
-server_socket.bind((host, port))
-print("Group server socket connected to: ", localhost)
+server.bind((host, port))
+print("Group server socket connected to: ", host)
 
 matrix_Of_Groups =  [['add','m4','m1', 'nm', 'nm'],
                     ['sub', 'm2', 'm3', 'nm', 'nm'],
@@ -88,7 +88,7 @@ def handle_Client(client_information):
                 """
                 THIS IF WILL TELL US IF THE USER WANTS TO MANIPULATE THE MATRIX OF GROUPS
                 """
-                if(operation == 'group'):
+                if(operation == '1'):
                     print("The user wants to manipulate the matrix of groups")
                     """
                     WE SHALL DEAL WITH THE OPTIONS IN ORDER
@@ -135,7 +135,7 @@ def handle_Client(client_information):
                 """
                 THIS IF WILL TELL US IF THE USER WANTS TO PERFORM A MATH OPERATION
                 """
-                if(operation == 'math'):
+                if(operation == '2'):
                     print("The user wants to make a math operation")
                     """
                     WE SHALL DEAL WITH THE OPTIONS IN ORDER
@@ -194,6 +194,11 @@ def broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, informatio
             SO WE HAVE TO SEND IT TO HIM
             """
             if(information == '5'):
+                client.send("READY".encode("utf-8"))
+                confirmation_message = client.recv(4096)
+                print(confirmation_message)
+                client.send(matrix_Of_Groups.encode("utf-8"))
+
                 data_set = {"groups" : matrix_Of_Groups}
                 data = json.dumps(data_set)
                 client.send(data)
@@ -503,7 +508,7 @@ def createGroup(matrix_Of_Groups,matrix_Of_Clients, machine_ID, client, operatio
             is_Already_Group = alreadyGroup(matrix_Of_Groups, group_ID)
             if(is_Already_Group == True):
                 print("The group add already exists")
-                client.send("The group add already exists").encode("utf-8")
+                client.send("GAE").encode("utf-8")
                 confirmation_message = client.recv(4096).decode("utf-8")
                 print(confirmation_message)
                 time.sleep(2)
@@ -511,14 +516,13 @@ def createGroup(matrix_Of_Groups,matrix_Of_Clients, machine_ID, client, operatio
             if(is_Already_Group == False):
                 print("The group does not exist, creating now, you will be the leader")
                 matrix_Of_Groups = addGroupToMatrix(matrix_Of_Groups, machine_ID, group_ID)
-                print("The new matrix of groups looks like this: ")
-                printMatrix(matrix_Of_Groups)
                 """
                 HERE WE SHOULD BROADCAST TO THE CLIENT THE NEW MATRIX OF GROUPS
                 """
-                operation = 'group'
-                information = '5'
-                broadcast(matrix_Of_Groups, matrix_Of_Clients, client, operation, information)
+                client.send("GDE".encode("utf-8"))
+                confirmation_message = client.recv(4096)
+                print(confirmation_message)
+                client.send(matrix_Of_Groups.encode("utf-8"))
                 time.sleep(2)
                 option = False
     return matrix_Of_Groups

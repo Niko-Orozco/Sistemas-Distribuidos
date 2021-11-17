@@ -60,17 +60,76 @@ def clientSend(machine_ID):
     print("To manipulate the matrix of groups press 1")
     print("To do a math operation press 2")
     opt = input("Please enter your selection: ")
+    """
+    THIS FIRST IF WILL DETERMINE FOR US IF THE USER WANTS TO MANIPULATE THE GROUPS
+    """
     if(opt = '1'):
         data_Array = groupController(machine_ID)
         machine_ID = data_Array[0]
         operation = data_Array[1]
         information = data_Array[2]
-        data_Set = {"machine": machine_ID, "operation" : operation, "information": information}
-        data = json.dumps(data_Set)
-        client_socket.send(data.encode("utf-8"))
+        """
+        OPERATION REPRESENTS THE MANIPULATION OF GROUPS
+        """
+        if(operation == '1'):
+            print("You have chosen to create a group"):
+            """
+            INFORMATION REPRESENTS THE OPTION FOR THE MANIPULATION MENU
+            1 CREATE
+            2 DELETE
+            3 ENTER
+            4 EXIT
+            5 SHOW GROUPS
+            6 SEND MESSAGE
+            """
+            if(information == '1'):
+                print("You hace chosen to create an adding group")
+                data_Set = {"machine": machine_ID, "operation" : operation, "information": information}
+                data = json.dumps(data_Set)
+                client_socket.send(data.encode("utf-8"))
+                message = client_socket.recv(4096).decode("utf-8")
+                client_socket.send("Message Arrived".encode("utf-8"))
+                if(message == 'GAE'):
+                    print("The adding group could not be created, it already exists")
+                    option = False
+                if (message == 'GDE' ):
+                    print("The group did not exist, creating now")
+                    matrix_Of_Groups = client_socket.recv(4096).decode("utf-8")
+                    printMatrix(matrix_Of_Groups)
+                    option = False
+            if(information == '5'):
+                print("You have chosen to show the groups")
+                data_Set = {"machine": machine_ID, "operation" : operation, "information": information}
+                data = json.dumps(data_Set)
+                client_socket.send(data.encode("utf-8"))
+                message = client_socket.recv(4096).decode("utf-8")
+                client_socket.send("Message Arrived".encode("utf-8"))
+                if(message == 'READY'):
+                    print("Recieving matrix of groups")
+                    matrix_Of_Groups = client_socket.recv(4096).decode("utf-8")
+                    printMatrix(matrix_Of_Groups)
+                    option = False
+
+
+
+
 
     if(opt = '2'):
         mathController(machine_ID)
+
+"""
+THIS FUNCTION CORRESPONDS TO THE FIFTH OPTION IN THE USER CONTROLER AND WILL SHOW THE
+USER THE GROUPS WITH ALL THEIR RESPECTIVE MEMBERS
+EDITORS NOTE: THIS FUNCTION IS READY
+"""
+def printMatrix(matrix_Of_Groups):
+    for i in range(len(matrix_Of_Groups)):
+        if(matrix_Of_Groups[i][0] != 'empty'):
+            print("Group: ", matrix_Of_Groups[i][0])
+            for j in range(len(matrix_Of_Groups[i]) - 1):
+                if(matrix_Of_Groups[i][j+1] != 'nm'):
+                    print("Members: ", matrix_Of_Groups[i][j+1])
+
 
 
 def groupController(machine_ID):
@@ -86,7 +145,6 @@ def groupController(machine_ID):
         print("Press 4 to exit a group")
         print("Press 5 to show the matrix of groups")
         print("Press 6 to send a message to a group")
-        print("Press 7 to compact on a JSON")
         opt = input("Please enter your selection:")
         print("\n")
         """
