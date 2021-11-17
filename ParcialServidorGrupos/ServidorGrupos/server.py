@@ -1607,13 +1607,14 @@ def group_Manipulation(machine_id, information, client_addr, detail):
         if(information == '4'):
             """
             THE CLIENT HAS CHOSEN TO EXIT A GROUP
-            EDITORS NOTE: NONE EXISTENT
+            EDITORS NOTE: READY
             """
             exit_Group(machine_id, information, client_addr, detail)
         if(information == '5'):
             """
             THE CLIENT HAS CHOSEN TO SHOW ALL GROUP
             EDITORS NOTE: NONE EXISTENT
+            THIS IS THE NEXTO ORDER OF BUSSINESS
             """
             create_Group(machine_id, information, client_addr, detail)
         if(information == '6'):
