@@ -185,7 +185,7 @@ def group_Menu(machine_id):
                 confirmation_message, server_addr = client_socket.recvfrom(4096)
                 confirmation_message = confirmation_message.decode()
                 if(confirmation_message == 'AE'):
-                    print("The sub group already exists")
+                    print("The mul group already exists")
                     time.sleep(2)
                     client_Main_Menu(machine_id)
 

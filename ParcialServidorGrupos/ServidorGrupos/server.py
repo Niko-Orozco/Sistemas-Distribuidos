@@ -47,14 +47,58 @@ def addGroupToMatrix(machine_id, information):
                 break
     if(information == '2'):
         """
-        WE SHALL CREATE AN ADD GROUP
+        WE SHALL CREATE A SUB GROUP
         """
         for i in range(len(matrix_of_groups)):
             if (matrix_of_groups[i][0] == 'empty'):
                 matrix_of_groups[i][0] = 'sub'
                 matrix_of_groups[i][1] = machine_id
                 break
-
+    if(information == '3'):
+        """
+        WE SHALL CREATE A MUL GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if (matrix_of_groups[i][0] == 'empty'):
+                matrix_of_groups[i][0] = 'mul'
+                matrix_of_groups[i][1] = machine_id
+                break
+    if(information == '4'):
+        """
+        WE SHALL CREATE A DIV GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if (matrix_of_groups[i][0] == 'empty'):
+                matrix_of_groups[i][0] = 'div'
+                matrix_of_groups[i][1] = machine_id
+                break
+    if(information == '5'):
+        """
+        WE SHALL CREATE A POW GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if (matrix_of_groups[i][0] == 'empty'):
+                matrix_of_groups[i][0] = 'pow'
+                matrix_of_groups[i][1] = machine_id
+                break
+    if(information == '6'):
+        """
+        WE SHALL CREATE A RAD GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if (matrix_of_groups[i][0] == 'empty'):
+                matrix_of_groups[i][0] = 'rad'
+                matrix_of_groups[i][1] = machine_id
+                break
+    if(information == '7'):
+        """
+        WE SHALL CREATE A LOG GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if (matrix_of_groups[i][0] == 'empty'):
+                matrix_of_groups[i][0] = 'log'
+                matrix_of_groups[i][1] = machine_id
+                break
 """
 THIS FUNCTION WILL CHECK IF A GROUP ALREADY EXISTS
 """
@@ -62,7 +106,7 @@ def already_Group(information):
     is_already_group = False
     if(information == '1'):
         """
-        USER WANTS TO CREAT AN ADD GROUP
+        USER WANTS TO CREATE AN ADD GROUP
         """
         for i in range(len(matrix_of_groups)):
             if(matrix_of_groups[i][0] == 'add'):
@@ -70,10 +114,50 @@ def already_Group(information):
                 break
     if(information == '2'):
         """
-        USER WANTS TO CREAT A SUB GROUP
+        USER WANTS TO CREATE A SUB GROUP
         """
         for i in range(len(matrix_of_groups)):
             if(matrix_of_groups[i][0] == 'sub'):
+                is_already_group = True
+                break
+    if(information == '3'):
+        """
+        USER WANTS TO CREATE A MUL GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'mul'):
+                is_already_group = True
+                break
+    if(information == '4'):
+        """
+        USER WANTS TO CREATE A DIV GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'div'):
+                is_already_group = True
+                break
+    if(information == '5'):
+        """
+        USER WANTS TO CREATE A POW GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'pow'):
+                is_already_group = True
+                break
+    if(information == '6'):
+        """
+        USER WANTS TO CREATE A RAD GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'rad'):
+                is_already_group = True
+                break
+    if(information == '7'):
+        """
+        USER WANTS TO CREATE A LOG GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'log'):
                 is_already_group = True
                 break
     return is_already_group
@@ -242,8 +326,26 @@ def group_Manipulation(machine_id, information, client_addr):
             THE CLIENT HAS CHOSEN TO CREATE A MULTIPLY GROUP
             """
             create_Group(machine_id, information, client_addr)
-
-
+        if(information == '4'):
+            """
+            THE CLIENT HAS CHOSEN TO CREATE A DIVIDE GROUP
+            """
+            create_Group(machine_id, information, client_addr)
+        if(information == '5'):
+            """
+            THE CLIENT HAS CHOSEN TO CREATE A POWER GROUP
+            """
+            create_Group(machine_id, information, client_addr)
+        if(information == '6'):
+            """
+            THE CLIENT HAS CHOSEN TO CREATE A RADICAL GROUP !OH NO :(
+            """
+            create_Group(machine_id, information, client_addr)
+        if(information == '7'):
+            """
+            THE CLIENT HAS CHOSEN TO CREATE A LOGARITHM GROUP
+            """
+            create_Group(machine_id, information, client_addr)
 """
 THIS FUNCTION HANDLES THE CLIENTS REQUESTS AND ROUTES THEM ACCORDINGLY
 """
