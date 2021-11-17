@@ -1,6 +1,6 @@
 import socket
 import json
-
+import time
 """
 CODE BY:
 JACOBO OROZCO ARDILA
@@ -16,7 +16,7 @@ print("Group server socket created")
 server_socket.bind((host, port))
 print("Group server socket connected to ", host)
 
-matrix_Of_Groups =  [['add','m4','m1', 'nm', 'nm'],
+matrix_of_groups =  [['empty','nm','nm', 'nm', 'nm'],
                     ['sub', 'm2', 'm3', 'nm', 'nm'],
                     ['mul', 'm1', 'm4', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm'],
@@ -24,25 +24,164 @@ matrix_Of_Groups =  [['add','m4','m1', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm']]
 
-matrix_Of_Clients = [['m1', 'na'],
+matrix_of_clients = [['m1', 'na'],
                      ['m2', 'na'],
                      ['m3', 'na'],
                      ['m4', 'na']]
 
 
 
-def handle_Client(machine_ID, client_addr):
+"""
+THIS FUNCTION WILL CREATE A GROUP AND INSERT THE PERSON WHO CREATED IT TO THE GROUP
+EDITORS NOTE: THIS FUNCTION IS READY
+"""
+def addGroupToMatrix(machine_id, information):
+    if(information == '1'):
+        """
+        WE SHALL CREATE AN ADD GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if (matrix_of_groups[i][0] == 'empty'):
+                matrix_of_groups[i][0] = 'add'
+                matrix_of_groups[i][1] = machine_id
+
+"""
+THIS FUNCTION WILL CHECK IF A GROUP ALREADY EXISTS
+"""
+def already_Group(information):
+    is_already_group = False
+    if(information == '1'):
+        """
+        USER WANTS TO CREAT AN ADD GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'add'):
+                is_already_group = True
+                break
+    return is_already_group
+
+"""
+THIS FUCNTIION CORRESPONDS TO THE FIRST OPTION IN THE GROUP MANIPULATION OPTIONS
+IT WILL ATEMPT TO CREATE A GROUP
+IF IT ALREADY EXISTS IT WILL TELL THE USER
+"""
+def create_Group(machine_id, information, client_addr):
+    print("The user has elected to create a group")
+    is_already_group = False
+    option = True
+    while option:
+        if(information == '1'):
+            """
+            THE USER HAS CHOSEN TO CREATE AN ADD GROUP
+            """
+            is_already_group = already_Group(information)
+
+            if(is_already_group == True):
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == False):
+                server_socket.sendto("DE".encode(), client_addr)
+                confirmation_message, client_addr = server_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == "Proceed"):
+                    addGroupToMatrix(machine_id, information)
+                    print("New matrix of groups")
+                    print(matrix_of_groups)
+                    """
+                    WE SHOULD HAVE THE UPDATED MATRIX TO SEND TO USER
+                    WILL HAVE TO DO ON A JSON
+                    """
+                    server_socket.sendto("DE".encode(), client_addr)
+                    confirmation_message, client_addr = server_socket.recvfrom(4096)
+                    confirmation_message = confirmation_message.decode()
+
+                    group_data = json.dumps({"matrix": matrix_of_groups})
+                    try:
+                        server_socket.sendto(group_data.encode(), client_addr)
+
+                        confirmation_message, client_addr = server_socket.recvfrom(4096)
+                        confirmation_message = confirmation_message.decode()
+                        if(confirmation_message == "Proceed"):
+                            handle_Client(machine_id, client_addr)
+                    except Exception as e:
+                        print(e)
+
+
+
+
+
+
+
+
+"""
+THIS FUNCTION WILL COVER THE BASIC INTERACTION BETWEEN THE CLIENTS CHOSEN GROUP MANIPULATION FUNCTION
+"""
+def group_Manipulation(machine_id, information, client_addr):
+    option = True
+    while option:
+        """
+        FOR INFORMATION
+        1 CREATE GROUP
+        2 DELETE GROUP
+        3 ENTER GROUP
+        4 EXIT GROUP
+        5 VIEW ALL GROUPS
+        6 TEXT A GROUP
+        """
+        if(information == '1'):
+            """
+            THE CLIENT HAS CHOSEN TO CREATE AN ADD GROUP
+            """
+            create_Group(machine_id, information, client_addr)
+
+
+"""
+THIS FUNCTION HANDLES THE CLIENTS REQUESTS AND ROUTES THEM ACCORDINGLY
+"""
+def handle_Client(machine_id, client_addr):
     option = True
     while option:
         data, client_addr = server_socket.recvfrom(4096)
+        if data:
+            data = json.loads(data.decode())
+            array_data = data.get("data")
+            machine_id = array_data[0]
+            operation = array_data[1]
+            information = array_data[2]
+            print("Machine id: ", machine_id)
+            print("Operation: ", operation)
+            print("Information: ", information)
+            """
+            THINK ABOUT THIS SEND
+            MAYBE SAVE IT FOR THE RESULT
+            """
+            server_socket.sendto("Recieved data".encode(), client_addr)
+
+            message, client_addr = server_socket.recvfrom(4096)
+            message = message.decode()
+            """
+            UP TO THIS POINT WE HAVE CONFIRMED THAT THE CLIENT AND SERVER HAVE SENT
+            US THE INFORMATION
+            AND NOW WE SHALL PROCEED WITH HIS REQUEST
+            """
+            if(message == 'Proceed'):
+                """
+                OPERATION
+                1 MEANS GROUP MATRIX MANIPULATION
+                """
+                if(operation == '1'):
+                    group_Manipulation(machine_id, information, client_addr)
+
+
 
 """
 THE ADD CLIENT FUNCTION WILL ADD A CLIENT TO THE MATRIX OF CLIENTS WITH HIS ID AND ADDRESS
 """
-def add_Client(machine_ID, client_addr):
-    for i in range(len(matrix_Of_Clients)):
-        if(matrix_Of_Clients[i][0] == machine_ID):
-            matrix_Of_Clients[i][1] = client_addr
+def add_Client(machine_id, client_addr):
+    for i in range(len(matrix_of_clients)):
+        if(matrix_of_clients[i][0] == machine_id):
+            matrix_of_clients[i][1] = client_addr
             break
 
 def main_Control():
@@ -56,19 +195,19 @@ def main_Control():
         """
         REVIEVING MACHINE ID AND ADDRESS FOR CLIENT
         """
-        machine_ID, client_addr = server_socket.recvfrom(4096)
-        machine_ID = machine_ID.decode()
-        print("Connection established with ", machine_ID, "@ address ", client_addr)
+        machine_id, client_addr = server_socket.recvfrom(4096)
+        machine_id = machine_id.decode()
+        print("Connection established with ", machine_id, "@ address ", client_addr)
         """
         SENDING CONFIRMATION MESSAGE THAT MACHINE ID HAS BEEN RECIEVED
         """
         server_socket.sendto("Recieved machine id".encode(), client_addr)
 
-        add_Client(machine_ID, client_addr)
+        add_Client(machine_id, client_addr)
         print("New matrix of clients: ")
-        print(matrix_Of_Clients)
+        print(matrix_of_clients)
 
-        handle_Client(machine_ ID, client_addr)
+        handle_Client(machine_id, client_addr)
 
 def main():
     """
