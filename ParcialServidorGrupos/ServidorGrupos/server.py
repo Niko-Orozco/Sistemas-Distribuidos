@@ -289,10 +289,162 @@ def create_Group(machine_id, information, client_addr):
                             handle_Client(machine_id, client_addr)
                     except Exception as e:
                         print(e)
+        if(information == '4'):
+            """
+            THE USER HAS CHOSEN TO CREATE A DIV GROUP
+            """
+            is_already_group = already_Group(information)
+
+            if(is_already_group == True):
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == False):
+                server_socket.sendto("DE".encode(), client_addr)
+                confirmation_message, client_addr = server_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == "Proceed"):
+                    addGroupToMatrix(machine_id, information)
+                    print("New matrix of groups")
+                    print(matrix_of_groups)
+                    """
+                    WE SHOULD HAVE THE UPDATED MATRIX TO SEND TO USER
+                    WILL HAVE TO DO ON A JSON
+                    """
+                    group_data = json.dumps({"matrix": matrix_of_groups})
 
 
+                    data_Set = {"groups": matrix_of_groups}
+                    data = json.dumps(data_Set)
+                    print("About to show what is in data")
+                    print(data)
+
+                    try:
+                        server_socket.sendto(data.encode(), client_addr)
+
+                        confirmation_message, client_addr = server_socket.recvfrom(4096)
+                        confirmation_message = confirmation_message.decode()
+                        if(confirmation_message == "Proceed"):
+                            handle_Client(machine_id, client_addr)
+                    except Exception as e:
+                        print(e)
+        if(information == '5'):
+            """
+            THE USER HAS CHOSEN TO CREATE A POW GROUP
+            """
+            is_already_group = already_Group(information)
+
+            if(is_already_group == True):
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == False):
+                server_socket.sendto("DE".encode(), client_addr)
+                confirmation_message, client_addr = server_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == "Proceed"):
+                    addGroupToMatrix(machine_id, information)
+                    print("New matrix of groups")
+                    print(matrix_of_groups)
+                    """
+                    WE SHOULD HAVE THE UPDATED MATRIX TO SEND TO USER
+                    WILL HAVE TO DO ON A JSON
+                    """
+                    group_data = json.dumps({"matrix": matrix_of_groups})
 
 
+                    data_Set = {"groups": matrix_of_groups}
+                    data = json.dumps(data_Set)
+                    print("About to show what is in data")
+                    print(data)
+
+                    try:
+                        server_socket.sendto(data.encode(), client_addr)
+
+                        confirmation_message, client_addr = server_socket.recvfrom(4096)
+                        confirmation_message = confirmation_message.decode()
+                        if(confirmation_message == "Proceed"):
+                            handle_Client(machine_id, client_addr)
+                    except Exception as e:
+                        print(e)
+        if(information == '6'):
+            """
+            THE USER HAS CHOSEN TO CREATE A RAD GROUP
+            """
+            is_already_group = already_Group(information)
+
+            if(is_already_group == True):
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == False):
+                server_socket.sendto("DE".encode(), client_addr)
+                confirmation_message, client_addr = server_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == "Proceed"):
+                    addGroupToMatrix(machine_id, information)
+                    print("New matrix of groups")
+                    print(matrix_of_groups)
+                    """
+                    WE SHOULD HAVE THE UPDATED MATRIX TO SEND TO USER
+                    WILL HAVE TO DO ON A JSON
+                    """
+                    group_data = json.dumps({"matrix": matrix_of_groups})
+
+
+                    data_Set = {"groups": matrix_of_groups}
+                    data = json.dumps(data_Set)
+                    print("About to show what is in data")
+                    print(data)
+
+                    try:
+                        server_socket.sendto(data.encode(), client_addr)
+
+                        confirmation_message, client_addr = server_socket.recvfrom(4096)
+                        confirmation_message = confirmation_message.decode()
+                        if(confirmation_message == "Proceed"):
+                            handle_Client(machine_id, client_addr)
+                    except Exception as e:
+                        print(e)
+        if(information == '7'):
+            """
+            THE USER HAS CHOSEN TO CREATE A LOG GROUP
+            """
+            is_already_group = already_Group(information)
+
+            if(is_already_group == True):
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == False):
+                server_socket.sendto("DE".encode(), client_addr)
+                confirmation_message, client_addr = server_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == "Proceed"):
+                    addGroupToMatrix(machine_id, information)
+                    print("New matrix of groups")
+                    print(matrix_of_groups)
+                    """
+                    WE SHOULD HAVE THE UPDATED MATRIX TO SEND TO USER
+                    WILL HAVE TO DO ON A JSON
+                    """
+                    group_data = json.dumps({"matrix": matrix_of_groups})
+
+
+                    data_Set = {"groups": matrix_of_groups}
+                    data = json.dumps(data_Set)
+                    print("About to show what is in data")
+                    print(data)
+
+                    try:
+                        server_socket.sendto(data.encode(), client_addr)
+
+                        confirmation_message, client_addr = server_socket.recvfrom(4096)
+                        confirmation_message = confirmation_message.decode()
+                        if(confirmation_message == "Proceed"):
+                            handle_Client(machine_id, client_addr)
+                    except Exception as e:
+                        print(e)
 
 
 
