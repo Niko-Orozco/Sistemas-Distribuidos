@@ -911,6 +911,304 @@ def group_Menu(machine_id):
                     time.sleep(2)
                     client_Main_Menu(machine_id)
 
+        if(opt == '4'):
+            print("You have chosen to exit a group")
+            print("Which group would you like to exit: ")
+            print("Press 1 for add")
+            print("Press 2 for subtract")
+            print("Press 3 for multiply")
+            print("Press 4 for divide")
+            print("Press 5 for power")
+            print("Press 6 for radical")
+            print("Press 7 for logarithm")
+            op = input("Please enter your selection:")
+            detail = op
+            print("\n")
+            if(op == '1'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The group already exists")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'NM'):
+                    print("Not a member of ths group")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'AM'):
+                    print("The group exists and the user is a member, leaving group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+            if(op == '2'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The group already exists")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'AM'):
+                    print("Already a member of ths group")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'NM'):
+                    print("The group exists and the user is not yet a membar, joining group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+            if(op == '3'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The group already exists")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'AM'):
+                    print("Already a member of ths group")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'NM'):
+                    print("The group exists and the user is not yet a membar, joining group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '4'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The group already exists")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'AM'):
+                    print("Already a member of ths group")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'NM'):
+                    print("The group exists and the user is not yet a membar, joining group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '5'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The group already exists")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'AM'):
+                    print("Already a member of ths group")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'NM'):
+                    print("The group exists and the user is not yet a membar, joining group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '6'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The group already exists")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'AM'):
+                    print("Already a member of ths group")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'NM'):
+                    print("The group exists and the user is not yet a membar, joining group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+            if(op == '7'):
+                data_array = [machine_id, operation, information, detail]
+                data_set = {'data': data_array}
+                data = json.dumps(data_set)
+                client_socket.sendto(data.encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                print(confirmation_message)
+
+                client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                confirmation_message, server_addr = client_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == 'AE'):
+                    print("The group already exists")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'AM'):
+                    print("Already a member of ths group")
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
+                if(confirmation_message == 'NM'):
+                    print("The group exists and the user is not yet a membar, joining group")
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    data, server_addr = client_socket.recvfrom(4096)
+                    if data:
+                        print("Data recieved with matrix")
+                        data = json.loads(data.decode())
+                        matrix_of_groups = data.get("groups")
+                        printMatrix(matrix_of_groups)
+
+
+                    client_socket.sendto("Proceed".encode(), (host, 5432))
+
+                    time.sleep(2)
+                    client_Main_Menu(machine_id)
+
 """
 IN THIS FUNCTION THE CLIENT WILL SELECT THEIR DESIRED
 CURSE OF ACTION AS DISCUSED IN THE COMMENTS IN MAIN

@@ -16,13 +16,13 @@ print("Group server socket created")
 server_socket.bind((host, port))
 print("Group server socket connected to ", host)
 
-matrix_of_groups =  [['add','m3','m2', 'm4', 'nm'],
+matrix_of_groups =  [['add','m1','m2', 'm4', 'nm'],
                     ['sub', 'm3', 'm4', 'nm', 'nm'],
                     ['mul', 'm1', 'm4', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm'],
-                    ['empty','nm','nm', 'nm', 'nm']]
+                    ['log','m2','m3', 'nm', 'nm']]
 
 matrix_of_clients = [['m1', 'na'],
                      ['m2', 'na'],
@@ -33,11 +33,387 @@ matrix_of_clients = [['m1', 'na'],
 
 
 
+def leave_Group(machine_id, detail):
+    if(detail == '1'):
+        print("\n")
+        print("You are exiting the add group")
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'add'):
+                for j in range(len(matrix_of_groups[i]) - 1):
+                    if(matrix_of_groups[i][j + 1] == machine_id):
+                        matrix_of_groups[i][j + 1] = "nm"
+                        break
+    if(detail == '2'):
+        print("\n")
+        print("You are exiting the sub group")
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'sub'):
+                for j in range(len(matrix_of_groups[i]) - 1):
+                    if(matrix_of_groups[i][j + 1] == machine_id):
+                        matrix_of_groups[i][j + 1] = "nm"
+                        break
+    if(detail == '3'):
+        print("\n")
+        print("You are exiting the sub group")
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'sub'):
+                for j in range(len(matrix_of_groups[i]) - 1):
+                    if(matrix_of_groups[i][j + 1] == machine_id):
+                        matrix_of_groups[i][j + 1] = "nm"
+                        break
+
+def exit_Group(machine_id, information, client_addr, detail):
+    print("The user has chosen to enter a group")
+    group_exists = False
+    is_member = False
+    option = True
+    while option:
+        if(detail == '1'):
+            """
+            THE USER HAS CHOSEN TO ENTER AN ADD GROUP
+            """
+            is_already_group = already_Group(detail)
+
+            if(is_already_group == False):
+                print("The group doesnt exist")
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == True):
+                print("The group exists")
+                is_member = already_In_Group(machine_id, detail)
+                if(is_member == False):
+                    server_socket.sendto("NM".encode(), client_addr)
+                    time.sleep(2)
+                    handle_Client(machine_id, client_addr)
+                if(is_member == True):
+                    server_socket.sendto("AM".encode(), client_addr)
+                    confirmation_message, client_addr = server_socket.recvfrom(4096)
+                    confirmation_message = confirmation_message.decode()
+                    if(confirmation_message == "Proceed"):
+                        print("SERVER RECIEVED CONFIRMATION OF GREEN LIGHT TO JOIN")
+                        leave_Group(machine_id, detail)
+                        print("New matrix of groups")
+                        print(matrix_of_groups)
+
+                        data_Set = {"groups": matrix_of_groups}
+                        data = json.dumps(data_Set)
+                        print("About to show what is in data")
+                        print(data)
+
+                        try:
+                            server_socket.sendto(data.encode(), client_addr)
+
+                            confirmation_message, client_addr = server_socket.recvfrom(4096)
+                            confirmation_message = confirmation_message.decode()
+                            if(confirmation_message == "Proceed"):
+                                handle_Client(machine_id, client_addr)
+                        except Exception as e:
+                            print(e)
+
+        if(detail == '2'):
+            """
+            THE USER HAS CHOSEN TO ENTER AN SUB GROUP
+            """
+            is_already_group = already_Group(detail)
+
+            if(is_already_group == False):
+                print("The group doesnt exist")
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == True):
+                print("The group exists")
+                is_member = already_In_Group(machine_id, detail)
+                if(is_member == True):
+                    server_socket.sendto("AM".encode(), client_addr)
+                    time.sleep(2)
+                    handle_Client(machine_id, client_addr)
+                if(is_member == False):
+                    server_socket.sendto("NM".encode(), client_addr)
+                    confirmation_message, client_addr = server_socket.recvfrom(4096)
+                    confirmation_message = confirmation_message.decode()
+                    if(confirmation_message == "Proceed"):
+                        print("SERVER RECIEVED CONFIRMATION OF GREEN LIGHT TO JOIN")
+                        leave_Group(machine_id, detail)
+                        print("New matrix of groups")
+                        print(matrix_of_groups)
+
+                        data_Set = {"groups": matrix_of_groups}
+                        data = json.dumps(data_Set)
+                        print("About to show what is in data")
+                        print(data)
+
+                        try:
+                            server_socket.sendto(data.encode(), client_addr)
+
+                            confirmation_message, client_addr = server_socket.recvfrom(4096)
+                            confirmation_message = confirmation_message.decode()
+                            if(confirmation_message == "Proceed"):
+                                handle_Client(machine_id, client_addr)
+                        except Exception as e:
+                            print(e)
+        if(detail == '3'):
+            """
+            THE USER HAS CHOSEN TO ENTER AN MUL GROUP
+            """
+            is_already_group = already_Group(detail)
+
+            if(is_already_group == False):
+                print("The group doesnt exist")
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == True):
+                print("The group exists")
+                is_member = already_In_Group(machine_id, detail)
+                if(is_member == True):
+                    server_socket.sendto("AM".encode(), client_addr)
+                    time.sleep(2)
+                    handle_Client(machine_id, client_addr)
+                if(is_member == False):
+                    server_socket.sendto("NM".encode(), client_addr)
+                    confirmation_message, client_addr = server_socket.recvfrom(4096)
+                    confirmation_message = confirmation_message.decode()
+                    if(confirmation_message == "Proceed"):
+                        print("SERVER RECIEVED CONFIRMATION OF GREEN LIGHT TO JOIN")
+                        leave_Group(machine_id, detail)
+                        print("New matrix of groups")
+                        print(matrix_of_groups)
+
+                        data_Set = {"groups": matrix_of_groups}
+                        data = json.dumps(data_Set)
+                        print("About to show what is in data")
+                        print(data)
+
+                        try:
+                            server_socket.sendto(data.encode(), client_addr)
+
+                            confirmation_message, client_addr = server_socket.recvfrom(4096)
+                            confirmation_message = confirmation_message.decode()
+                            if(confirmation_message == "Proceed"):
+                                handle_Client(machine_id, client_addr)
+                        except Exception as e:
+                            print(e)
+        if(detail == '4'):
+            """
+            THE USER HAS CHOSEN TO ENTER AN DIV GROUP
+            """
+            is_already_group = already_Group(detail)
+
+            if(is_already_group == False):
+                print("The group doesnt exist")
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == True):
+                print("The group exists")
+                is_member = already_In_Group(machine_id, detail)
+                if(is_member == True):
+                    server_socket.sendto("AM".encode(), client_addr)
+                    time.sleep(2)
+                    handle_Client(machine_id, client_addr)
+                if(is_member == False):
+                    server_socket.sendto("NM".encode(), client_addr)
+                    confirmation_message, client_addr = server_socket.recvfrom(4096)
+                    confirmation_message = confirmation_message.decode()
+                    if(confirmation_message == "Proceed"):
+                        print("SERVER RECIEVED CONFIRMATION OF GREEN LIGHT TO JOIN")
+                        leave_Group(machine_id, detail)
+                        print("New matrix of groups")
+                        print(matrix_of_groups)
+
+                        data_Set = {"groups": matrix_of_groups}
+                        data = json.dumps(data_Set)
+                        print("About to show what is in data")
+                        print(data)
+
+                        try:
+                            server_socket.sendto(data.encode(), client_addr)
+
+                            confirmation_message, client_addr = server_socket.recvfrom(4096)
+                            confirmation_message = confirmation_message.decode()
+                            if(confirmation_message == "Proceed"):
+                                handle_Client(machine_id, client_addr)
+                        except Exception as e:
+                            print(e)
+        if(detail == '5'):
+            """
+            THE USER HAS CHOSEN TO ENTER AN POW GROUP
+            """
+            is_already_group = already_Group(detail)
+
+            if(is_already_group == False):
+                print("The group doesnt exist")
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == True):
+                print("The group exists")
+                is_member = already_In_Group(machine_id, detail)
+                if(is_member == True):
+                    server_socket.sendto("AM".encode(), client_addr)
+                    time.sleep(2)
+                    handle_Client(machine_id, client_addr)
+                if(is_member == False):
+                    server_socket.sendto("NM".encode(), client_addr)
+                    confirmation_message, client_addr = server_socket.recvfrom(4096)
+                    confirmation_message = confirmation_message.decode()
+                    if(confirmation_message == "Proceed"):
+                        print("SERVER RECIEVED CONFIRMATION OF GREEN LIGHT TO JOIN")
+                        leave_Group(machine_id, detail)
+                        print("New matrix of groups")
+                        print(matrix_of_groups)
+
+                        data_Set = {"groups": matrix_of_groups}
+                        data = json.dumps(data_Set)
+                        print("About to show what is in data")
+                        print(data)
+
+                        try:
+                            server_socket.sendto(data.encode(), client_addr)
+
+                            confirmation_message, client_addr = server_socket.recvfrom(4096)
+                            confirmation_message = confirmation_message.decode()
+                            if(confirmation_message == "Proceed"):
+                                handle_Client(machine_id, client_addr)
+                        except Exception as e:
+                            print(e)
+
+        if(detail == '6'):
+            """
+            THE USER HAS CHOSEN TO ENTER AN RAD GROUP
+            """
+            is_already_group = already_Group(detail)
+
+            if(is_already_group == False):
+                print("The group doesnt exist")
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == True):
+                print("The group exists")
+                is_member = already_In_Group(machine_id, detail)
+                if(is_member == True):
+                    server_socket.sendto("AM".encode(), client_addr)
+                    time.sleep(2)
+                    handle_Client(machine_id, client_addr)
+                if(is_member == False):
+                    server_socket.sendto("NM".encode(), client_addr)
+                    confirmation_message, client_addr = server_socket.recvfrom(4096)
+                    confirmation_message = confirmation_message.decode()
+                    if(confirmation_message == "Proceed"):
+                        print("SERVER RECIEVED CONFIRMATION OF GREEN LIGHT TO JOIN")
+                        leave_Group(machine_id, detail)
+                        print("New matrix of groups")
+                        print(matrix_of_groups)
+
+                        data_Set = {"groups": matrix_of_groups}
+                        data = json.dumps(data_Set)
+                        print("About to show what is in data")
+                        print(data)
+
+                        try:
+                            server_socket.sendto(data.encode(), client_addr)
+
+                            confirmation_message, client_addr = server_socket.recvfrom(4096)
+                            confirmation_message = confirmation_message.decode()
+                            if(confirmation_message == "Proceed"):
+                                handle_Client(machine_id, client_addr)
+                        except Exception as e:
+                            print(e)
+
+        if(detail == '7'):
+            """
+            THE USER HAS CHOSEN TO ENTER AN LOG GROUP
+            """
+            is_already_group = already_Group(detail)
+
+            if(is_already_group == False):
+                print("The group doesnt exist")
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == True):
+                print("The group exists")
+                is_member = already_In_Group(machine_id, detail)
+                if(is_member == True):
+                    server_socket.sendto("AM".encode(), client_addr)
+                    time.sleep(2)
+                    handle_Client(machine_id, client_addr)
+                if(is_member == False):
+                    server_socket.sendto("NM".encode(), client_addr)
+                    confirmation_message, client_addr = server_socket.recvfrom(4096)
+                    confirmation_message = confirmation_message.decode()
+                    if(confirmation_message == "Proceed"):
+                        print("SERVER RECIEVED CONFIRMATION OF GREEN LIGHT TO JOIN")
+                        leave_Group(machine_id, detail)
+                        print("New matrix of groups")
+                        print(matrix_of_groups)
+
+                        data_Set = {"groups": matrix_of_groups}
+                        data = json.dumps(data_Set)
+                        print("About to show what is in data")
+                        print(data)
+
+                        try:
+                            server_socket.sendto(data.encode(), client_addr)
+
+                            confirmation_message, client_addr = server_socket.recvfrom(4096)
+                            confirmation_message = confirmation_message.decode()
+                            if(confirmation_message == "Proceed"):
+                                handle_Client(machine_id, client_addr)
+                        except Exception as e:
+                            print(e)
+
+
 def already_In_Group(machine_id, detail):
     is_member = False
     if(detail == '1'):
         for i in range(len(matrix_of_groups)):
             if(matrix_of_groups[i][0] == 'add'):
+                for j in range(len(matrix_of_groups[i]) - 1):
+                    if(matrix_of_groups[i][j+1] == machine_id):
+                        is_member = True
+                        break
+    if(detail == '2'):
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'sub'):
+                for j in range(len(matrix_of_groups[i]) - 1):
+                    if(matrix_of_groups[i][j+1] == machine_id):
+                        is_member = True
+                        break
+    if(detail == '3'):
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'mul'):
+                for j in range(len(matrix_of_groups[i]) - 1):
+                    if(matrix_of_groups[i][j+1] == machine_id):
+                        is_member = True
+                        break
+    if(detail == '4'):
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'div'):
+                for j in range(len(matrix_of_groups[i]) - 1):
+                    if(matrix_of_groups[i][j+1] == machine_id):
+                        is_member = True
+                        break
+    if(detail == '5'):
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'pow'):
+                for j in range(len(matrix_of_groups[i]) - 1):
+                    if(matrix_of_groups[i][j+1] == machine_id):
+                        is_member = True
+                        break
+    if(detail == '6'):
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'rad'):
+                for j in range(len(matrix_of_groups[i]) - 1):
+                    if(matrix_of_groups[i][j+1] == machine_id):
+                        is_member = True
+                        break
+    if(detail == '7'):
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'log'):
                 for j in range(len(matrix_of_groups[i]) - 1):
                     if(matrix_of_groups[i][j+1] == machine_id):
                         is_member = True
@@ -50,6 +426,54 @@ def join_Group(machine_id, detail):
         print("The user is joining the add group")
         for i in range(len(matrix_of_groups)):
             if(matrix_of_groups[i][0] == 'add'):
+                for j in range(len(matrix_of_groups) - 1):
+                    if(matrix_of_groups[i][j + 1] == "nm"):
+                        matrix_of_groups[i][j + 1] = machine_id
+                        break
+    if(detail == '2'):
+        print("The user is joining the sub group")
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'sub'):
+                for j in range(len(matrix_of_groups) - 1):
+                    if(matrix_of_groups[i][j + 1] == "nm"):
+                        matrix_of_groups[i][j + 1] = machine_id
+                        break
+    if(detail == '3'):
+        print("The user is joining the mul group")
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'mul'):
+                for j in range(len(matrix_of_groups) - 1):
+                    if(matrix_of_groups[i][j + 1] == "nm"):
+                        matrix_of_groups[i][j + 1] = machine_id
+                        break
+    if(detail == '4'):
+        print("The user is joining the div group")
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'div'):
+                for j in range(len(matrix_of_groups) - 1):
+                    if(matrix_of_groups[i][j + 1] == "nm"):
+                        matrix_of_groups[i][j + 1] = machine_id
+                        break
+    if(detail == '5'):
+        print("The user is joining the pow group")
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'pow'):
+                for j in range(len(matrix_of_groups) - 1):
+                    if(matrix_of_groups[i][j + 1] == "nm"):
+                        matrix_of_groups[i][j + 1] = machine_id
+                        break
+    if(detail == '6'):
+        print("The user is joining the rad group")
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'rad'):
+                for j in range(len(matrix_of_groups) - 1):
+                    if(matrix_of_groups[i][j + 1] == "nm"):
+                        matrix_of_groups[i][j + 1] = machine_id
+                        break
+    if(detail == '7'):
+        print("The user is joining the log group")
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'log'):
                 for j in range(len(matrix_of_groups) - 1):
                     if(matrix_of_groups[i][j + 1] == "nm"):
                         matrix_of_groups[i][j + 1] = machine_id
@@ -1165,17 +1589,19 @@ def group_Manipulation(machine_id, information, client_addr, detail):
         if(information == '1'):
             """
             THE CLIENT HAS CHOSEN TO CREATE A GROUP
+            EDITORS NOTE: READY
             """
             create_Group(machine_id, information, client_addr, detail)
         if(information == '2'):
             """
             THE CLIENT HAS CHOSEN TO DELETE A GROUP
+            EDITORS NOTE: READY
             """
             delete_Group(machine_id, information, client_addr, detail)
         if(information == '3'):
             """
             THE CLIENT HAS CHOSEN TO ENTER A GROUP
-            EDITORS NOTE: IN THE PROCESS OF CREATING THIS FUNCTION
+            EDITORS NOTE: READY
             """
             enter_Group(machine_id, information, client_addr, detail)
         if(information == '4'):
@@ -1183,7 +1609,7 @@ def group_Manipulation(machine_id, information, client_addr, detail):
             THE CLIENT HAS CHOSEN TO EXIT A GROUP
             EDITORS NOTE: NONE EXISTENT
             """
-            create_Group(machine_id, information, client_addr, detail)
+            exit_Group(machine_id, information, client_addr, detail)
         if(information == '5'):
             """
             THE CLIENT HAS CHOSEN TO SHOW ALL GROUP
