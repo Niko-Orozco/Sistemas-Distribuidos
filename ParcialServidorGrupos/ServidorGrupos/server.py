@@ -16,8 +16,8 @@ print("Group server socket created")
 server_socket.bind((host, port))
 print("Group server socket connected to ", host)
 
-matrix_of_groups =  [['empty','nm','nm', 'nm', 'nm'],
-                    ['sub', 'm2', 'm3', 'nm', 'nm'],
+matrix_of_groups =  [['add','m1','m4', 'nm', 'nm'],
+                    ['empty', 'nm', 'nm', 'nm', 'nm'],
                     ['mul', 'm1', 'm4', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm'],
                     ['empty','nm','nm', 'nm', 'nm'],
@@ -44,6 +44,16 @@ def addGroupToMatrix(machine_id, information):
             if (matrix_of_groups[i][0] == 'empty'):
                 matrix_of_groups[i][0] = 'add'
                 matrix_of_groups[i][1] = machine_id
+                break
+    if(information == '2'):
+        """
+        WE SHALL CREATE AN ADD GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if (matrix_of_groups[i][0] == 'empty'):
+                matrix_of_groups[i][0] = 'sub'
+                matrix_of_groups[i][1] = machine_id
+                break
 
 """
 THIS FUNCTION WILL CHECK IF A GROUP ALREADY EXISTS
@@ -56,6 +66,14 @@ def already_Group(information):
         """
         for i in range(len(matrix_of_groups)):
             if(matrix_of_groups[i][0] == 'add'):
+                is_already_group = True
+                break
+    if(information == '2'):
+        """
+        USER WANTS TO CREAT A SUB GROUP
+        """
+        for i in range(len(matrix_of_groups)):
+            if(matrix_of_groups[i][0] == 'sub'):
                 is_already_group = True
                 break
     return is_already_group
@@ -92,13 +110,16 @@ def create_Group(machine_id, information, client_addr):
                     WE SHOULD HAVE THE UPDATED MATRIX TO SEND TO USER
                     WILL HAVE TO DO ON A JSON
                     """
-                    server_socket.sendto("DE".encode(), client_addr)
-                    confirmation_message, client_addr = server_socket.recvfrom(4096)
-                    confirmation_message = confirmation_message.decode()
-
                     group_data = json.dumps({"matrix": matrix_of_groups})
+
+
+                    data_Set = {"groups": matrix_of_groups}
+                    data = json.dumps(data_Set)
+                    print("About to show what is in data")
+                    print(data)
+
                     try:
-                        server_socket.sendto(group_data.encode(), client_addr)
+                        server_socket.sendto(data.encode(), client_addr)
 
                         confirmation_message, client_addr = server_socket.recvfrom(4096)
                         confirmation_message = confirmation_message.decode()
@@ -106,7 +127,84 @@ def create_Group(machine_id, information, client_addr):
                             handle_Client(machine_id, client_addr)
                     except Exception as e:
                         print(e)
+        if(information == '2'):
+            """
+            THE USER HAS CHOSEN TO CREATE A SUB GROUP
+            """
+            is_already_group = already_Group(information)
 
+            if(is_already_group == True):
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == False):
+                server_socket.sendto("DE".encode(), client_addr)
+                confirmation_message, client_addr = server_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == "Proceed"):
+                    addGroupToMatrix(machine_id, information)
+                    print("New matrix of groups")
+                    print(matrix_of_groups)
+                    """
+                    WE SHOULD HAVE THE UPDATED MATRIX TO SEND TO USER
+                    WILL HAVE TO DO ON A JSON
+                    """
+                    group_data = json.dumps({"matrix": matrix_of_groups})
+
+
+                    data_Set = {"groups": matrix_of_groups}
+                    data = json.dumps(data_Set)
+                    print("About to show what is in data")
+                    print(data)
+
+                    try:
+                        server_socket.sendto(data.encode(), client_addr)
+
+                        confirmation_message, client_addr = server_socket.recvfrom(4096)
+                        confirmation_message = confirmation_message.decode()
+                        if(confirmation_message == "Proceed"):
+                            handle_Client(machine_id, client_addr)
+                    except Exception as e:
+                        print(e)
+        if(information == '3'):
+            """
+            THE USER HAS CHOSEN TO CREATE A MUL GROUP
+            """
+            is_already_group = already_Group(information)
+
+            if(is_already_group == True):
+                server_socket.sendto("AE".encode(), client_addr)
+                time.sleep(2)
+                handle_Client(machine_id, client_addr)
+            if(is_already_group == False):
+                server_socket.sendto("DE".encode(), client_addr)
+                confirmation_message, client_addr = server_socket.recvfrom(4096)
+                confirmation_message = confirmation_message.decode()
+                if(confirmation_message == "Proceed"):
+                    addGroupToMatrix(machine_id, information)
+                    print("New matrix of groups")
+                    print(matrix_of_groups)
+                    """
+                    WE SHOULD HAVE THE UPDATED MATRIX TO SEND TO USER
+                    WILL HAVE TO DO ON A JSON
+                    """
+                    group_data = json.dumps({"matrix": matrix_of_groups})
+
+
+                    data_Set = {"groups": matrix_of_groups}
+                    data = json.dumps(data_Set)
+                    print("About to show what is in data")
+                    print(data)
+
+                    try:
+                        server_socket.sendto(data.encode(), client_addr)
+
+                        confirmation_message, client_addr = server_socket.recvfrom(4096)
+                        confirmation_message = confirmation_message.decode()
+                        if(confirmation_message == "Proceed"):
+                            handle_Client(machine_id, client_addr)
+                    except Exception as e:
+                        print(e)
 
 
 
@@ -132,6 +230,16 @@ def group_Manipulation(machine_id, information, client_addr):
         if(information == '1'):
             """
             THE CLIENT HAS CHOSEN TO CREATE AN ADD GROUP
+            """
+            create_Group(machine_id, information, client_addr)
+        if(information == '2'):
+            """
+            THE CLIENT HAS CHOSEN TO CREATE A SUBTRACT GROUP
+            """
+            create_Group(machine_id, information, client_addr)
+        if(information == '3'):
+            """
+            THE CLIENT HAS CHOSEN TO CREATE A MULTIPLY GROUP
             """
             create_Group(machine_id, information, client_addr)
 
