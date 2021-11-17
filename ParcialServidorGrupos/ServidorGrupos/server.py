@@ -393,6 +393,8 @@ THIS FUNCTION WILL CREATE A GROUP AND INSERT THE PERSON WHO CREATED IT TO THE GR
 EDITORS NOTE: THIS FUNCTION IS READY
 """
 def addGroupToMatrix(machine_id, detail):
+    print("About to add to matrix")
+    print("Detail: ", detail)
     if(detail == '1'):
         """
         WE SHALL CREATE AN ADD GROUP
@@ -526,13 +528,16 @@ IF IT ALREADY EXISTS IT WILL TELL THE USER
 """
 def create_Group(machine_id, information, client_addr, detail):
     print("The user has elected to create a group")
+    print("Detailed1: ", detail)
     is_already_group = False
     option = True
     while option:
+        print("Detailed1: ", detail)
         if(detail == '1'):
             """
             THE USER HAS CHOSEN TO CREATE AN ADD GROUP
             """
+            detail = '1'
             is_already_group = already_Group(detail)
 
             if(is_already_group == True):
@@ -572,7 +577,8 @@ def create_Group(machine_id, information, client_addr, detail):
             """
             THE USER HAS CHOSEN TO CREATE A SUB GROUP
             """
-            is_already_group = already_Group(information)
+            detail = '2'
+            is_already_group = already_Group(detail)
 
             if(is_already_group == True):
                 server_socket.sendto("AE".encode(), client_addr)
@@ -583,7 +589,7 @@ def create_Group(machine_id, information, client_addr, detail):
                 confirmation_message, client_addr = server_socket.recvfrom(4096)
                 confirmation_message = confirmation_message.decode()
                 if(confirmation_message == "Proceed"):
-                    addGroupToMatrix(machine_id, information)
+                    addGroupToMatrix(machine_id, detail)
                     print("New matrix of groups")
                     print(matrix_of_groups)
                     """
@@ -611,7 +617,8 @@ def create_Group(machine_id, information, client_addr, detail):
             """
             THE USER HAS CHOSEN TO CREATE A MUL GROUP
             """
-            is_already_group = already_Group(information)
+            detail = '3'
+            is_already_group = already_Group(detail)
 
             if(is_already_group == True):
                 server_socket.sendto("AE".encode(), client_addr)
@@ -622,7 +629,7 @@ def create_Group(machine_id, information, client_addr, detail):
                 confirmation_message, client_addr = server_socket.recvfrom(4096)
                 confirmation_message = confirmation_message.decode()
                 if(confirmation_message == "Proceed"):
-                    addGroupToMatrix(machine_id, information)
+                    addGroupToMatrix(machine_id, detail)
                     print("New matrix of groups")
                     print(matrix_of_groups)
                     """
@@ -650,7 +657,8 @@ def create_Group(machine_id, information, client_addr, detail):
             """
             THE USER HAS CHOSEN TO CREATE A DIV GROUP
             """
-            is_already_group = already_Group(information)
+            detail = '4'
+            is_already_group = already_Group(detail)
 
             if(is_already_group == True):
                 server_socket.sendto("AE".encode(), client_addr)
@@ -661,7 +669,7 @@ def create_Group(machine_id, information, client_addr, detail):
                 confirmation_message, client_addr = server_socket.recvfrom(4096)
                 confirmation_message = confirmation_message.decode()
                 if(confirmation_message == "Proceed"):
-                    addGroupToMatrix(machine_id, information)
+                    addGroupToMatrix(machine_id, detail)
                     print("New matrix of groups")
                     print(matrix_of_groups)
                     """
@@ -689,7 +697,8 @@ def create_Group(machine_id, information, client_addr, detail):
             """
             THE USER HAS CHOSEN TO CREATE A POW GROUP
             """
-            is_already_group = already_Group(information)
+            detail = '5'
+            is_already_group = already_Group(detail)
 
             if(is_already_group == True):
                 server_socket.sendto("AE".encode(), client_addr)
@@ -700,7 +709,7 @@ def create_Group(machine_id, information, client_addr, detail):
                 confirmation_message, client_addr = server_socket.recvfrom(4096)
                 confirmation_message = confirmation_message.decode()
                 if(confirmation_message == "Proceed"):
-                    addGroupToMatrix(machine_id, information)
+                    addGroupToMatrix(machine_id, detail)
                     print("New matrix of groups")
                     print(matrix_of_groups)
                     """
@@ -728,7 +737,8 @@ def create_Group(machine_id, information, client_addr, detail):
             """
             THE USER HAS CHOSEN TO CREATE A RAD GROUP
             """
-            is_already_group = already_Group(information)
+            detail = '6'
+            is_already_group = already_Group(detail)
 
             if(is_already_group == True):
                 server_socket.sendto("AE".encode(), client_addr)
@@ -739,7 +749,7 @@ def create_Group(machine_id, information, client_addr, detail):
                 confirmation_message, client_addr = server_socket.recvfrom(4096)
                 confirmation_message = confirmation_message.decode()
                 if(confirmation_message == "Proceed"):
-                    addGroupToMatrix(machine_id, information)
+                    addGroupToMatrix(machine_id, detail)
                     print("New matrix of groups")
                     print(matrix_of_groups)
                     """
@@ -767,7 +777,10 @@ def create_Group(machine_id, information, client_addr, detail):
             """
             THE USER HAS CHOSEN TO CREATE A LOG GROUP
             """
-            is_already_group = already_Group(information)
+            detail = '7'
+            print("Detailed3: ", detail)
+            is_already_group = already_Group(detail)
+            print("Detailed4: ", detail)
 
             if(is_already_group == True):
                 server_socket.sendto("AE".encode(), client_addr)
@@ -778,7 +791,7 @@ def create_Group(machine_id, information, client_addr, detail):
                 confirmation_message, client_addr = server_socket.recvfrom(4096)
                 confirmation_message = confirmation_message.decode()
                 if(confirmation_message == "Proceed"):
-                    addGroupToMatrix(machine_id, information)
+                    addGroupToMatrix(machine_id, detail)
                     print("New matrix of groups")
                     print(matrix_of_groups)
                     """
@@ -882,11 +895,13 @@ def handle_Client(machine_id, client_addr):
             AND NOW WE SHALL PROCEED WITH HIS REQUEST
             """
             if(message == 'Proceed'):
+                print("Successfully retrieved the data from the client")
                 """
                 OPERATION
                 1 MEANS GROUP MATRIX MANIPULATION
                 """
                 if(operation == '1'):
+                    print("We know what the client wants")
                     group_Manipulation(machine_id, information, client_addr, detail)
 
 

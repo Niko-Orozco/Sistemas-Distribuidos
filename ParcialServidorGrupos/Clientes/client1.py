@@ -96,10 +96,9 @@ def group_Menu(machine_id):
             print("Press 6 for radical")
             print("Press 7 for logarithm")
             op = input("Please enter your selection:")
-            detail = opt
+            detail = op
             print("\n")
             if(op == '1'):
-                information = '1'
                 data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
@@ -135,7 +134,6 @@ def group_Menu(machine_id):
                     time.sleep(2)
                     client_Main_Menu(machine_id)
             if(op == '2'):
-                information = '2'
                 data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
@@ -171,7 +169,6 @@ def group_Menu(machine_id):
                     time.sleep(2)
                     client_Main_Menu(machine_id)
             if(op == '3'):
-                information = '3'
                 data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
@@ -207,7 +204,6 @@ def group_Menu(machine_id):
                     time.sleep(2)
                     client_Main_Menu(machine_id)
             if(op == '4'):
-                information = '4'
                 data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
@@ -244,7 +240,6 @@ def group_Menu(machine_id):
                     client_Main_Menu(machine_id)
 
             if(op == '5'):
-                information = '5'
                 data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
@@ -281,7 +276,6 @@ def group_Menu(machine_id):
                     client_Main_Menu(machine_id)
 
             if(op == '6'):
-                information = '6'
                 data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
@@ -318,7 +312,6 @@ def group_Menu(machine_id):
                     client_Main_Menu(machine_id)
 
             if(op == '7'):
-                information = '7'
                 data_array = [machine_id, operation, information, detail]
                 data_set = {'data': data_array}
                 data = json.dumps(data_set)
