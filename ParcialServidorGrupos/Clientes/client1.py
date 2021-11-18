@@ -4,7 +4,7 @@ import time
 """
 CODE BY:
 JACOBO OROZCO ARDILA
-NICOLAS ANDREI OROZCO
+NICOLAS ANDREY OROZCO
 """
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
