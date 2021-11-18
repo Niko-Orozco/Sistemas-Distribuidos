@@ -4,7 +4,7 @@ import time
 """
 CODE BY:
 JACOBO OROZCO ARDILA
-NICOLAS ANDREI OROZCO
+NICOLAS ANDREY OROZCO
 """
 
 host = 'localhost'
